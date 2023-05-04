@@ -1,40 +1,75 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
+import { Types } from 'mongoose';
 import { authenticatedProcedure } from '../../../core/trpc';
-import { MCompany } from '../db';
+import {
+  MAccount, MAccountCompanyClinicLink, MAccountCompanyLink, MClinic, MCompany,
+} from '../db';
+import { RoleKey } from '../db/_types';
 
 const addCompanyByUser = authenticatedProcedure.input(
   z.object({
     name: z.string(),
-    loginPrefix: z.string()
-      .toLowerCase()
-      .regex(/^[a-z0-9]+$/i, { message: 'Must be alphanumeric' })
-      .min(3, { message: 'Must be 3-12 characters long' })
-      .max(12, { message: 'Must be 3-12 characters long' }),
   }),
 )
   .mutation(async ({ input, ctx }) => {
-    const { accountId } = ctx;
-    const { name, loginPrefix } = input;
-    const loginPrefixExists = !!(await MCompany.findOne({ loginPrefix }));
+    const { accountId, roleKey } = ctx;
+    const { name } = input;
 
-    if (loginPrefixExists) {
+    if (roleKey !== RoleKey.user) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
-        message: 'Login prefix is taken',
+        message: 'Incorrect role',
       });
     }
 
-    // todo: validate if user has existing owned company already
+    const account = await MAccount.findOne({ _id: accountId });
+
+    if (!(account?.email && account?.isEmailVerified && account?.email === account?.login)) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Account must have a verified email',
+      });
+    }
+
+    // Only allow owning one company per user for now
+    const existingCompany = await MCompany.findOne({ ownedById: accountId });
+    if (existingCompany) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Company creation limit reached',
+      });
+    }
+
+    const newCompanyId = new Types.ObjectId();
+
     const newCompany = await new MCompany({
+      _id: newCompanyId,
       name,
-      loginPrefix,
       ownedById: accountId,
       createdById: accountId,
       updatedById: accountId,
     }).save();
 
-    return newCompany.toObject();
+    const newClinic = await new MClinic({
+      name: 'Clinic 1',
+      companyId: newCompany._id,
+      createdById: accountId,
+      updatedById: accountId,
+    }).save();
+
+    await MAccount.updateOne(
+      { _id: accountId },
+      { $set: { lastUsedClinicId: newClinic._id, lastUsedCompanyId: newCompanyId } },
+    );
+
+    await new MAccountCompanyLink({ account, company: newCompany }).save();
+    await new MAccountCompanyClinicLink({ account, company: newCompany, clinic: newClinic }).save();
+
+    return {
+      _id: newCompanyId.toHexString(),
+      name,
+    };
   });
 
 export default addCompanyByUser;

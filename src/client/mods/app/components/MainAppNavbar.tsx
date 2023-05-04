@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { BankOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
 import {
-  BankOutlined, SearchOutlined, SettingOutlined, UserOutlined,
-} from '@ant-design/icons';
-import {
-  Avatar, Button, Select, Space, Switch, Typography,
+  Avatar, Button, Space, Switch, Typography,
 } from 'antd';
 import Link from 'next/link';
 import Image from 'next/image';
 import styled from 'styled-components';
+import { observer } from 'mobx-react';
+import AuthContext from 'client/core/mobx/Auth';
 
 const Wrapper = styled.div`
   display: flex;
@@ -27,13 +27,14 @@ const Wrapper = styled.div`
 
     .company-select-container {
       margin-left: 2rem;
+      display: flex;
+      align-items: center;
 
-      .company-select {
-        margin-left: 1rem;
+      .company-name {
+        margin-right: 0.5rem;
+        font-size: 1.5rem;
+        font-weight: 500;
       }
-    }
-    .company-settings-container {
-      margin-left: 0.5rem;
     }
   }
   .right {
@@ -53,6 +54,10 @@ const Wrapper = styled.div`
 `;
 
 function MainAppNavbar() {
+  const authCtx = useContext(AuthContext);
+
+  const company = authCtx.myAccount?.company?.name || '...';
+
   return (
     <Wrapper>
       <div className="left">
@@ -62,24 +67,12 @@ function MainAppNavbar() {
           </Link>
         </div>
         <div className="company-select-container">
-          <Select
-            defaultValue="lucy"
-            style={{ width: 240 }}
-            onChange={() => undefined}
-            className="company-select"
-            suffixIcon={<BankOutlined />}
-            size="small"
-            options={[
-              { value: 'jack', label: 'Jack' },
-              { value: 'lucy', label: 'My Company Dental Care, Inc.' },
-              { value: 'Yiminghe', label: 'yiminghe' },
-              { value: 'disabled', label: 'Disabled', disabled: true },
-            ]}
-          />
+          <div className="company-name">
+            {company}
+          </div>
+          <Button icon={<BankOutlined />} size="small" />
         </div>
-        <div className="company-settings-container">
-          <Button icon={<SettingOutlined />} size="small" type="text" />
-        </div>
+
       </div>
       <div className="right">
         <div className="kiosk-switch-container">
@@ -101,4 +94,4 @@ function MainAppNavbar() {
   );
 }
 
-export default MainAppNavbar;
+export default observer(MainAppNavbar);

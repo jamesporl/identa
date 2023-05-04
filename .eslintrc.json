@@ -15,6 +15,7 @@
         "allow": ["_id"]
       }
     ],
-    "react-hooks/exhaustive-deps": "off"
+    "react-hooks/exhaustive-deps": "off",
+    "react/destructuring-assignment": "off"
   }
 }

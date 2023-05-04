@@ -25,15 +25,25 @@ export interface Account extends Document {
   username?: string;
   firstName: string;
   lastName: string;
+  searchName: string;
   phone?: string;
-  isEmailValidated: boolean;
-  isActive: boolean;
+  isEmailVerified: boolean;
   password: string;
+  lastUsedCompanyId?: Types.ObjectId;
+  lastUsedClinicId?: Types.ObjectId;
+  roles: AccountRole[];
+  isActive: boolean;
   createdById: Types.ObjectId;
   updatedById: Types.ObjectId;
-  roles: AccountRole[];
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface AccountEmailVerCode extends Document {
+  accountId: Types.ObjectId;
+  code: string;
+  attempts: number;
+  sentAt: Date;
 }
 
 export interface Company extends Document {
@@ -52,6 +62,36 @@ export interface Clinic extends Document {
   isActive: boolean;
   createdById: Types.ObjectId;
   updatedById: Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface SimpleAccount {
+  _id: Types.ObjectId;
+  name: string;
+}
+
+export interface SimpleCompany {
+  _id: Types.ObjectId;
+  name: string;
+}
+
+export interface SimpleClinic {
+  _id: Types.ObjectId;
+  name: string;
+}
+
+export interface AccountCompanyLink extends Document {
+  account: SimpleAccount;
+  company: SimpleCompany;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AccountCompanyClinicLink extends Document {
+  account: SimpleAccount;
+  company: SimpleCompany;
+  clinic: SimpleClinic;
   createdAt: Date;
   updatedAt: Date;
 }

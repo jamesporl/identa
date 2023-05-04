@@ -4,6 +4,7 @@ import { TRPCError } from '@trpc/server';
 import { publicProcedure } from '../../../core/trpc';
 import { MAccount } from '../db';
 import generateAuthToken from '../utils/generateAuthToken';
+import generateVerificationToken from '../utils/generateVerificationToken';
 
 const login = publicProcedure.input(
   z.object({
@@ -31,16 +32,26 @@ const login = publicProcedure.input(
     }
 
     let authToken = '';
-    try {
-      authToken = generateAuthToken(account);
-    } catch (error) {
-      throw new TRPCError({
-        code: 'BAD_REQUEST',
-        message: 'Unable to generate auth token',
-      });
+    let verificationToken = '';
+    if (!account.isEmailVerified) {
+      verificationToken = generateVerificationToken(account._id);
+    } else {
+      try {
+        authToken = await generateAuthToken({ account });
+      } catch (error) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Unable to generate auth token',
+        });
+      }
     }
 
-    return authToken;
+    console.log({ authToken, verificationToken });
+
+    return {
+      authToken,
+      verificationToken,
+    };
   });
 
 export default login;
