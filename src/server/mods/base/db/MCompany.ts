@@ -4,9 +4,7 @@ import { Company } from './_types';
 const CompanySchema = new Schema(
   {
     name: { type: String, trim: true },
-    loginPrefix: {
-      type: String, trim: true, lowercase: true, unique: true,
-    },
+    loginPrefix: { type: String, trim: true, lowercase: true },
     isActive: { type: Boolean, default: true },
     ownedById: { type: Types.ObjectId },
     createdById: { type: Types.ObjectId },

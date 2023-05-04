@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import SiteLayout from 'client/mods/site/components/SiteLayout/SiteLayout';
-import { Button, Typography } from 'antd';
+import { Button } from 'antd';
 
 const Wrapper = styled.div`
   .hero-container {

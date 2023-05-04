@@ -1,11 +1,13 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { Types } from 'mongoose';
+import zxcbn from 'zxcvbn';
 import { publicProcedure } from '../../../core/trpc';
 import { MAccount } from '../db';
-import generateAuthToken from '../utils/generateAuthToken';
 import hashPassword from '../utils/hashPassword';
 import { RoleKey } from '../db/_types';
+import sendWelcomeWithVerificationCodeEmail from '../utils/sendEmailVerificationCode';
+import generateVerificationToken from '../utils/generateVerificationToken';
 
 const signup = publicProcedure.input(
   z.object({
@@ -23,16 +25,23 @@ const signup = publicProcedure.input(
     if (emailExists) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
-        message: 'E-mail is already taken.',
+        message: 'E-mail is already taken',
       });
     }
 
-    // todo: check password strength
+    const pwStrength = zxcbn(password);
+    if (pwStrength.score < 2) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Please set a stronger password',
+      });
+    }
 
     const hashedPw = await hashPassword(password);
 
     const newId = new Types.ObjectId();
-    const newAccount = await new MAccount({
+
+    await new MAccount({
       _id: newId,
       firstName,
       lastName,
@@ -44,8 +53,11 @@ const signup = publicProcedure.input(
       updatedById: newId,
     }).save();
 
-    const authToken = generateAuthToken(newAccount);
-    return authToken;
+    const verificationToken = await generateVerificationToken(newId);
+
+    await sendWelcomeWithVerificationCodeEmail(newId);
+
+    return { verificationToken };
   });
 
 export default signup;

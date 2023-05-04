@@ -1,8 +1,7 @@
-import { ContainerOutlined, PlusOutlined } from '@ant-design/icons';
-import {
-  Select, Menu, Button, Space,
-} from 'antd';
-import React from 'react';
+import { PlusOutlined } from '@ant-design/icons';
+import { Menu, Button, Space } from 'antd';
+import ModalContext from 'client/core/mobx/Modal';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -22,11 +21,6 @@ const Wrapper = styled.div`
       display: flex;
       align-items: center;
       width: 100%;
-
-      .clinic-select-container {
-        padding-right: 2rem;
-        border-right: 1px solid #ccc;
-      }
 
       .app-menu {
         flex-grow: 1;
@@ -52,25 +46,15 @@ function SecondAppNavbar() {
     },
   ];
 
+  const modalCtx = useContext(ModalContext);
+
+  const handleClickAddPatientBtn = () => {
+    modalCtx.openModal('addPatientForm', 'Add Patient', {}, { width: 520, footer: false });
+  };
+
   return (
     <Wrapper>
       <div className="left">
-        <div className="clinic-select-container">
-          <Select
-            defaultValue="lucy"
-            style={{ width: 200 }}
-            onChange={() => undefined}
-            className="company-select"
-            suffixIcon={<ContainerOutlined />}
-            size="small"
-            options={[
-              { value: 'jack', label: 'Jack' },
-              { value: 'lucy', label: 'Makati Branch' },
-              { value: 'Yiminghe', label: 'yiminghe' },
-              { value: 'disabled', label: 'Disabled', disabled: true },
-            ]}
-          />
-        </div>
         <div className="app-menu">
           <Menu onClick={() => undefined} selectedKeys={['patients']} mode="horizontal" items={items} />
         </div>
@@ -80,11 +64,10 @@ function SecondAppNavbar() {
           <Button icon={<PlusOutlined />} size="small" onClick={() => undefined} type="text">
             Add Visit
           </Button>
-          <Button icon={<PlusOutlined />} size="small" onClick={() => undefined} type="text">
+          <Button icon={<PlusOutlined />} size="small" onClick={handleClickAddPatientBtn} type="text">
             Add Patient
           </Button>
         </Space>
-
       </div>
     </Wrapper>
   );

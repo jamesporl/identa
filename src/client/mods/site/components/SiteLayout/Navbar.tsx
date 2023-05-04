@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styled from 'styled-components';
 import { Button } from 'antd';
 import { observer } from 'mobx-react';
-import useStores from 'client/core/mobx/useStores';
 import { RoleKey } from 'server/mods/base/db/_types';
+import AuthContext from 'client/core/mobx/Auth';
 
 const Wrapper = styled.div`
   display: flex;
@@ -23,7 +23,7 @@ const Wrapper = styled.div`
 `;
 
 function Navbar() {
-  const { authStore } = useStores();
+  const authCtx = useContext(AuthContext);
 
   let accountBtn = (
     <Link href="/account/login" passHref>
@@ -31,13 +31,13 @@ function Navbar() {
     </Link>
   );
 
-  if (authStore.myAccount?.roleKey === RoleKey.user) {
+  if (authCtx.myAccount?.roleKey === RoleKey.user) {
     accountBtn = (
       <Link href="/app" passHref>
         <Button type="primary" ghost>Go to App</Button>
       </Link>
     );
-  } else if (authStore.myAccount?.roleKey === RoleKey.admin) {
+  } else if (authCtx.myAccount?.roleKey === RoleKey.admin) {
     accountBtn = (
       <Link href="/site-admin" passHref>
         <Button type="primary" ghost>Admin Site</Button>

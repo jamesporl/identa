@@ -6,10 +6,12 @@ import { createContext } from './core/trpc';
 import { appTrpcRouter } from './core/appTrpcRouter';
 import connectToMongo from './core/connectToMongo';
 import loadInitialData from './core/loadInitialData';
+import config from './core/config';
+
+const PORT = 3111;
 
 (async (): Promise<void> => {
-  const port = 3000;
-  const dev = process.env.NODE_ENV !== 'production';
+  const dev = config.NODE_ENV !== 'production';
   const app = next({ dev });
   const handle = app.getRequestHandler();
 
@@ -34,8 +36,8 @@ import loadInitialData from './core/loadInitialData';
 
   server.all('*', (req: Request, res: Response) => handle(req, res));
 
-  server.listen(port, () => {
-    console.log(`> Ready on http://localhost:${port}`);
+  server.listen(PORT, () => {
+    console.log(`> Ready on http://localhost:${PORT}`);
   });
 })();
 
