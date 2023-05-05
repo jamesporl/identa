@@ -1,5 +1,6 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import AppLayout from 'client/mods/app/components/AppLayout';
@@ -9,6 +10,7 @@ import WrappedTable from 'client/mods/components/WrappedTable';
 import trpc from 'utils/trpc';
 import FormatDate from 'client/mods/app/components/FormatDate';
 import { BirthSex } from 'server/mods/practice/db/_types';
+import LIST_LIMIT from 'client/core/utils/constants/LIST_LIMIT';
 
 const Wrapper = styled.div`
   
@@ -19,6 +21,10 @@ function PatientsList() {
 
   const sheetCtx = useContext(SheetContext);
 
+  const [page, setPage] = useState(sheetCtx.sheet?.page || 1);
+
+  const patients = trpc.practice.patients.useQuery({ page, pageSize: LIST_LIMIT });
+
   useEffect(() => {
     if (sheetCtx.sheet?.pathname === router.pathname) {
       sheetCtx.setSheetProperty('asPath', router.asPath);
@@ -26,7 +32,20 @@ function PatientsList() {
     }
   }, [sheetCtx.sheet?.pathname, router.pathname]);
 
-  const patients = trpc.practice.patients.useQuery({ page: 1, pageSize: 20 });
+  useEffect(() => {
+    if (sheetCtx.sheet?.pathname === router.pathname && patients.data) {
+      sheetCtx.setSheetProperty('totalCount', patients.data.totalCount);
+      const activeDocLinks = patients.data.nodes.map((pt) => ({
+        _id: pt._id,
+        href: `/app/patients/${pt._id}`,
+      }));
+      sheetCtx.setSheetProperty('activeDocLinks', activeDocLinks);
+    }
+  }, [sheetCtx.sheet?.pathname, router.pathname, patients.data]);
+
+  const handleChangePage = async (newPage: number) => {
+    setPage(newPage);
+  };
 
   const columns = [
     {
@@ -34,6 +53,7 @@ function PatientsList() {
       dataIndex: 'name',
       key: 'name',
       width: '20%',
+      render: (name: string, doc: any) => <Link href={`/app/patients/${doc._id}`}>{name}</Link>,
     },
     {
       title: 'Birth Sex',
@@ -60,8 +80,16 @@ function PatientsList() {
   return (
     <Wrapper>
       <AppLayout>
-        <PageHeader />
-        <WrappedTable columns={columns} size="small" dataSource={patients.data?.nodes || []} pagination={false} rowKey="_id" />
+        <PageHeader pagination={{ onChange: handleChangePage }} />
+        <div className="page-content with-page-header">
+          <WrappedTable
+            columns={columns}
+            size="small"
+            dataSource={patients.data?.nodes || []}
+            pagination={false}
+            rowKey="_id"
+          />
+        </div>
       </AppLayout>
     </Wrapper>
   );

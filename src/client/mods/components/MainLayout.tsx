@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext } from 'react';
+import React, { ReactNode, useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
@@ -46,6 +46,23 @@ type MainLayoutProps = {
 function MainLayout({ children }: MainLayoutProps) {
   const modalCtx = useContext(ModalContext);
   const uiCtx = useContext(UIContext);
+
+  useEffect(() => {
+    const handleResize = () => {
+      uiCtx.setScreenSize(window.innerWidth, window.innerHeight);
+    };
+    // trigger resize on mount, and listen to resize event afterwards
+    if (typeof window !== 'undefined') {
+      handleResize();
+      window.addEventListener('resize', handleResize);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', handleResize);
+      }
+    };
+  }, []);
 
   return (
     <>
