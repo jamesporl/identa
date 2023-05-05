@@ -6,10 +6,20 @@ import { authenticatedProcedure } from '../../../core/trpc';
 import { MPatient, MPatientClinicLink } from '../db';
 import { BirthSex } from '../db/_types';
 
-function computeAge(dob: string) {
+export function computeAge(dob: string) {
   const today = startOfDay(utcToZonedTime(new Date(), 'Asia/Manila'));
   return differenceInYears(today, new Date(dob));
 }
+
+export const patientZObj = z.object({
+  _id: z.string(),
+  name: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  birthSex: z.nativeEnum(BirthSex),
+  dob: z.string(),
+  age: z.number(),
+});
 
 const patients = authenticatedProcedure.input(
   z.object({
@@ -19,15 +29,7 @@ const patients = authenticatedProcedure.input(
   }),
 ).output(
   z.object({
-    nodes: z.object({
-      _id: z.string(),
-      name: z.string(),
-      firstName: z.string(),
-      lastName: z.string(),
-      birthSex: z.nativeEnum(BirthSex),
-      dob: z.string(),
-      age: z.number(),
-    }).array(),
+    nodes: patientZObj.array(),
     totalCount: z.number(),
   }),
 )
@@ -56,15 +58,18 @@ const patients = authenticatedProcedure.input(
 
     const pts = await MPatient.find({ _id: { $in: ptIds } }).lean();
 
-    const nodes = pts.map((pt) => ({
-      _id: pt._id.toHexString(),
-      name: pt.name,
-      firstName: pt.firstName,
-      lastName: pt.lastName,
-      birthSex: pt.birthSex,
-      dob: pt.dob,
-      age: computeAge(pt.dob),
-    }));
+    const nodes = ptLinks.map((ptLink) => {
+      const pt = pts.find((pt1) => pt1._id.toHexString() === ptLink.patientId.toHexString());
+      return {
+        _id: pt?._id.toHexString() || 'error',
+        name: pt?.name || 'error',
+        firstName: pt?.firstName || 'error',
+        lastName: pt?.lastName || 'error',
+        birthSex: pt?.birthSex || BirthSex.u,
+        dob: pt?.dob || '1900-01-01',
+        age: computeAge(pt?.dob || '1900-01-01'),
+      };
+    });
 
     return { nodes, totalCount };
   });
