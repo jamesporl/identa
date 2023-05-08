@@ -21,7 +21,7 @@ const Wrapper = styled.div`
   top: 0;
   padding: 0 3rem;
 
-  .left {
+  .mainappnavbar-left {
     display: flex;
     align-items: center;
 
@@ -37,7 +37,7 @@ const Wrapper = styled.div`
       }
     }
   }
-  .right {
+  .mainappnavbar-right {
     display: flex;
     align-items: center;
 
@@ -60,7 +60,7 @@ function MainAppNavbar() {
 
   return (
     <Wrapper>
-      <div className="left">
+      <div className="mainappnavbar-left">
         <div>
           <Link href="/" passHref>
             <Image src="/logo-icon.png" height={30} width={30} alt="logo" />
@@ -74,7 +74,7 @@ function MainAppNavbar() {
         </div>
 
       </div>
-      <div className="right">
+      <div className="mainappnavbar-right">
         <div className="kiosk-switch-container">
           <Typography.Text type="secondary">Kiosk Mode</Typography.Text>
           <div className="kiosk-switch">

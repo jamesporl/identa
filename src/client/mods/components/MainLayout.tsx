@@ -35,7 +35,12 @@ const WrappedModal = styled(Modal)<ModalProps>`
 
   .ant-modal-title {
     font-weight: 700;
+    font-size: 1.2rem;
     color: ${(props) => props.theme.primary};
+  }
+
+  .ant-modal-body {
+    margin-top: 2rem;
   }
 `;
 
