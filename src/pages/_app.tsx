@@ -65,6 +65,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <ConfigProvider theme={{
           token: {
             colorPrimary: '#0f52ba',
+            fontFamily: "'inter', sans-serif",
           },
           components: {
             Table: {

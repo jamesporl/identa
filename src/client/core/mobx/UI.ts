@@ -11,9 +11,15 @@ class UI {
 
   @observable screenwidth = 1200;
 
+  @observable selectedMenuKey = 'patients';
+
   @action setScreenSize = (width: number, height: number) => {
     this.screenwidth = width;
     this.screenheight = height;
+  };
+
+  @action setSelectedMenuKey = (key: string) => {
+    this.selectedMenuKey = key;
   };
 }
 

@@ -5,14 +5,16 @@ import {
 import { uniqueId, set } from 'lodash';
 import { createContext } from 'react';
 
+export interface ActiveDocLink {
+  _id: string;
+  href: string;
+}
+
 interface SheetProps {
   key?: string;
   pathname?: string;
   asPath?: string;
-  activeDocLinks?: {
-    _id: string;
-    href: string;
-  }[];
+  activeDocLinks?: ActiveDocLink[];
   filter?: any;
   defaultFilter?: any;
   title?: string;

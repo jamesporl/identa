@@ -3,15 +3,28 @@ import { observer } from 'mobx-react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import AppLayout from 'client/mods/app/components/AppLayout';
-import PageHeader from 'client/mods/app/components/PageHeader';
 import SheetContext from 'client/core/mobx/Sheet';
+import UIContext from 'client/core/mobx/UI';
 import trpc from 'utils/trpc';
-import { Descriptions, Typography } from 'antd';
+import { Button, Descriptions, Space } from 'antd';
 import Image from 'next/image';
 import FormatDate from 'client/mods/app/components/FormatDate';
+import Pagination from 'client/mods/app/components/Pagination';
+import PageTitle from 'client/mods/app/components/PageTitle';
+import Breadcrumbs from 'client/mods/app/components/Breadcrumbs';
+import { EditOutlined } from '@ant-design/icons';
 
 const Wrapper = styled.div`
+  padding: 1rem;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  
   .main-info {
+    margin-top: 2rem;
     display: flex;
 
     .main-info-right {
@@ -25,15 +38,16 @@ function PatientView() {
 
   const sheetCtx = useContext(SheetContext);
 
+  const uiCtx = useContext(UIContext);
+
   const { patientId = '' } = router.query as { patientId?: string };
 
   const patient = trpc.practice.patient.useQuery({ patientId }, { enabled: !!patientId });
 
-  const { name } = patient.data || {};
-
   useEffect(() => {
     if (sheetCtx.sheet?.pathname === router.pathname) {
       sheetCtx.setSheetProperty('asPath', router.asPath);
+      uiCtx.setSelectedMenuKey('patients');
     }
   }, [sheetCtx.sheet?.pathname, router.pathname]);
 
@@ -54,9 +68,6 @@ function PatientView() {
         />
       </div>
       <div className="main-info-right">
-        <div className="name">
-          <Typography.Title level={3}>{name}</Typography.Title>
-        </div>
         <div className="desc">
           <Descriptions column={2}>
             <Descriptions.Item label="Birth sex">M</Descriptions.Item>
@@ -77,14 +88,19 @@ function PatientView() {
 
   return (
     <AppLayout>
-      <PageHeader />
-      <div className="page-content with-page-header">
-        <div className="pad">
-          <Wrapper>
-            {mainInfo}
-          </Wrapper>
+      <Wrapper>
+        <div className="header">
+          <div className="left">
+            <Breadcrumbs />
+            <Space size={16}>
+              <PageTitle />
+              <Button icon={<EditOutlined />}>Update</Button>
+            </Space>
+          </div>
+          <Pagination />
         </div>
-      </div>
+        {mainInfo}
+      </Wrapper>
     </AppLayout>
   );
 }
