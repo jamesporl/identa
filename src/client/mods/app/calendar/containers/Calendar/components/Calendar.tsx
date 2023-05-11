@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import styled from 'styled-components';
 import FullCalendar from '@fullcalendar/react';
@@ -50,43 +49,51 @@ const FullCalendarWrapper = styled.div`
   }
 `;
 
-function Calendar({ onDateClick = () => undefined }) {
+function Calendar() {
   // const fullCalendarRef = useRef();
 
   const uiCtx = useContext(UIContext);
 
-  // TODO: pull profile from account
-  const timezone = 'Asia/Manila';
+  const handleChangeDates = (ev) => {
+    console.log(ev);
+  };
 
-  // useEffect(() => {
-  //   const resizeTimeout = setTimeout(() => {
-  //     if (fullCalendarRef.current) {
-  //       // eslint-disable-next-line no-underscore-dangle
-  //       fullCalendarRef.current._calendarApi?.updateSize();
-  //     }
-  //   }, 2000);
-  //   return () => {
-  //     clearTimeout(resizeTimeout);
-  //   };
-  // }, [uiCtx.screenwidth]);
+  const handleClickEvent = (ev) => {
+    console.log(ev);
+  };
+
+  const events = [
+    {
+      title: 'event1',
+      start: '2023-05-11T04:00:00',
+      end: '2023-05-11T06:00:00',
+    },
+    {
+      title: 'event2',
+      start: '2023-05-17T16:00:00',
+      end: '2023-05-17T19:00:00',
+    },
+    {
+      title: 'event2',
+      start: '2023-05-22T11:00:00',
+      end: '2023-05-22T13:00:00',
+    },
+  ];
 
   return (
     <FullCalendarWrapper>
       <FullCalendar
         initialView="dayGridMonth"
         plugins={[dayGridPlugin, interactionPlugin, momentTimezone, timeGridPlugin]}
-        dateClick={onDateClick}
-        // datesSet={onDatesRender}
-        events={[]}
-        // eventClick={onEventClick}
+        datesSet={handleChangeDates}
+        events={events}
+        eventClick={handleClickEvent}
         handleWindowResize={false}
         headerToolbar={{
           left: 'title',
-          right: 'prev,next today',
+          right: 'prev,next dayGridMonth,timeGridWeek today',
         }}
-        height={uiCtx.screenheight - 224}
-        slotEventOverlap={false}
-        timeZone={timezone}
+        height={uiCtx.screenheight - 90}
         views={{
           timeGridDay: {
             allDaySlot: true,
@@ -95,20 +102,9 @@ function Calendar({ onDateClick = () => undefined }) {
             allDaySlot: false,
           },
         }}
-        buttonText={{
-          today: 'today', month: 'month', week: 'week', day: 'day', list: 'list',
-        }}
       />
     </FullCalendarWrapper>
   );
 }
-
-Calendar.propTypes = {
-  onDateClick: PropTypes.func,
-};
-
-Calendar.defaultProps = {
-  onDateClick: () => undefined,
-};
 
 export default observer(Calendar);

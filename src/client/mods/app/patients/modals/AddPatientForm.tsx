@@ -82,7 +82,7 @@ function AddPatientForm() {
             <Button type="primary" ghost onClick={modalCtx.closeModal}>
               Cancel
             </Button>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={addPatient.isLoading}>
               Submit
             </Button>
           </Space>

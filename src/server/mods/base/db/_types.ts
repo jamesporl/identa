@@ -25,8 +25,13 @@ export interface Account extends Document {
   username?: string;
   firstName: string;
   lastName: string;
-  searchName: string;
+  name: string;
+  hexColor?: string;
+  isPractitioner: boolean;
+  title?: string;
   phone?: string;
+  nameSuffix?: string;
+  professionalSuffix?: string;
   isEmailVerified: boolean;
   password: string;
   lastUsedCompanyId?: Types.ObjectId;
@@ -84,6 +89,7 @@ export interface SimpleClinic {
 export interface AccountCompanyLink extends Document {
   account: SimpleAccount;
   company: SimpleCompany;
+  isPractitioner: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -91,6 +97,7 @@ export interface AccountCompanyLink extends Document {
 export interface AccountCompanyClinicLink extends Document {
   account: SimpleAccount;
   company: SimpleCompany;
+  isPractitioner: boolean;
   clinic: SimpleClinic;
   createdAt: Date;
   updatedAt: Date;

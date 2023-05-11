@@ -17,6 +17,7 @@ const AccountCompanyLinkSchema = new Schema(
   {
     company: SimpleCompanySchema,
     account: SimpleAccountSchema,
+    isPractitioner: { type: Boolean, default: false },
   },
   { collection: 'AccountCompanyLink', timestamps: true },
 );
