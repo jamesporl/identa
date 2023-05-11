@@ -1,6 +1,6 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
-  Avatar, Button, Input, List, Space,
+  Avatar, Button, Input, List, Space, Tag,
 } from 'antd';
 import { observer } from 'mobx-react';
 import styled from 'styled-components';
@@ -10,7 +10,11 @@ import UIContext from 'client/core/mobx/UI';
 import PageTitle from 'client/mods/app/components/PageTitle';
 import Pagination from 'client/mods/app/components/Pagination';
 import { FilterOutlined, PlusOutlined } from '@ant-design/icons';
+import ModalContext from 'client/core/mobx/Modal';
+import trpc from 'utils/trpc';
+import LIST_LIMIT from 'client/core/utils/constants/LIST_LIMIT';
 import SettingsLayout from '../../components/SettingsLayout';
+import computeAccountName, { Account } from './utils/computeAccountName';
 
 interface WrapperProps {
   screenheight: number;
@@ -55,96 +59,18 @@ const Wrapper = styled.div<WrapperProps>`
   }
 `;
 
-const DATA_SOURCE = [
-  {
-    _id: 1,
-    email: 'juandelacruz@gmail.com',
-    name: 'Juan dela Cruz',
-    lastLoggedInAt: new Date('2023-04-25'),
-    image: '/profile-placeholder.jpg',
-    isActive: true,
-    title: 'Owner',
-  },
-  {
-    _id: 2,
-    email: 'juandelacruz@gmail.com',
-    name: 'Juan dela Cruz',
-    lastLoggedInAt: new Date('2023-04-25'),
-    image: '/profile-placeholder.jpg',
-    isActive: true,
-    title: 'Staff',
-  },
-  {
-    _id: 3,
-    email: 'juandelacruz@gmail.com',
-    name: 'Juan dela Cruz',
-    lastLoggedInAt: new Date('2023-04-25'),
-    image: '/profile-placeholder.jpg',
-    isActive: true,
-    title: 'Dentist',
-  },
-  {
-    _id: 4,
-    email: 'juandelacruz@gmail.com',
-    name: 'Juan dela Cruz',
-    lastLoggedInAt: new Date('2023-04-25'),
-    image: '/profile-placeholder.jpg',
-    isActive: true,
-    title: 'Dentist',
-  },
-  {
-    _id: 5,
-    email: 'juandelacruz@gmail.com',
-    name: 'Juan dela Cruz',
-    lastLoggedInAt: new Date('2023-04-25'),
-    image: '/profile-placeholder.jpg',
-    isActive: true,
-    title: 'Dentist',
-  },
-  {
-    _id: 6,
-    email: 'juandelacruz@gmail.com',
-    name: 'Juan dela Cruz',
-    lastLoggedInAt: new Date('2023-04-25'),
-    image: '/profile-placeholder.jpg',
-    isActive: true,
-    title: 'Staff',
-  },
-  {
-    _id: 7,
-    email: 'juandelacruz@gmail.com',
-    name: 'Juan dela Cruz',
-    lastLoggedInAt: new Date('2023-04-25'),
-    image: '/profile-placeholder.jpg',
-    isActive: true,
-    title: 'Staff',
-  },
-  {
-    _id: 8,
-    email: 'juandelacruz@gmail.com',
-    name: 'James dela Cruz',
-    lastLoggedInAt: new Date('2023-04-25'),
-    image: '/profile-placeholder.jpg',
-    isActive: true,
-  },
-  {
-    _id: 9,
-    email: 'juandelacruz@gmail.com',
-    name: 'Juan dela Santos',
-    lastLoggedInAt: new Date('2023-04-25'),
-    image: '/profile-placeholder.jpg',
-    isActive: true,
-    title: 'Staff',
-  },
-
-];
-
 function AccountsList() {
   const router = useRouter();
 
   const sheetCtx = useContext(SheetContext);
 
   const uiCtx = useContext(UIContext);
+
+  const modalCtx = useContext(ModalContext);
+
+  const [page, setPage] = useState(sheetCtx.sheet?.page || 1);
+
+  const accounts = trpc.practice.accounts.useQuery({ page, pageSize: LIST_LIMIT });
 
   useEffect(() => {
     if (sheetCtx.sheet?.pathname === router.pathname) {
@@ -154,6 +80,50 @@ function AccountsList() {
     }
   }, [sheetCtx.sheet?.pathname, router.pathname]);
 
+  useEffect(() => {
+    if (sheetCtx.sheet?.pathname === router.pathname && accounts.data) {
+      sheetCtx.setSheetProperty('totalCount', accounts.data.totalCount);
+      const activeDocLinks = accounts.data.nodes.map((account) => ({
+        _id: account._id,
+        href: `/app/settings/${account._id}`,
+      }));
+      sheetCtx.setSheetProperty('activeDocLinks', activeDocLinks);
+    }
+  }, [sheetCtx.sheet?.pathname, router.pathname, accounts.data]);
+
+  const handleClickAddAccountBtn = () => {
+    modalCtx.openModal('addAccountForm', 'Add Account', {}, { width: 700, footer: false });
+  };
+
+  const handleChangePage = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const renderItem = (item: Account) => {
+    let practionerTag = null;
+    if (item.isPractitioner) {
+      practionerTag = <Tag color="#108ee9">Practioner</Tag>;
+    }
+    return (
+      <List.Item>
+        <List.Item.Meta
+          avatar={<Avatar src="/profile-placeholder.jpg" size={60} />}
+          title={computeAccountName(item)}
+          description={(
+            <>
+              {item.login}
+              <br />
+              Last logged in at: Feb 25, 2023 3:01 PM
+              <br />
+              {`${item.title || ''} ` }
+              {practionerTag}
+            </>
+            )}
+        />
+      </List.Item>
+    );
+  };
+
   return (
     <SettingsLayout>
       <Wrapper screenheight={uiCtx.screenheight}>
@@ -161,13 +131,15 @@ function AccountsList() {
           <div className="content">
             <PageTitle />
             <div className="actions">
-              <Button icon={<PlusOutlined />} type="primary">New Account</Button>
+              <Button icon={<PlusOutlined />} type="primary" onClick={handleClickAddAccountBtn}>
+                New Account
+              </Button>
               <Space size={16}>
                 <Space size={4}>
                   <Button icon={<FilterOutlined />}>Filter</Button>
                   <Input.Search style={{ width: '220px' }} placeholder="Last name, First name" />
                 </Space>
-                <Pagination />
+                <Pagination onChangePage={handleChangePage} />
               </Space>
             </div>
           </div>
@@ -177,24 +149,8 @@ function AccountsList() {
             size="large"
             className="content"
             itemLayout="horizontal"
-            dataSource={DATA_SOURCE}
-            renderItem={(item) => (
-              <List.Item>
-                <List.Item.Meta
-                  avatar={<Avatar src={item.image} size={60} />}
-                  title={item.name}
-                  description={(
-                    <>
-                      {item.email}
-                      <br />
-                      Last logged in at: Feb 25, 2023 3:01 PM
-                      <br />
-                      {item.title}
-                    </>
-                    )}
-                />
-              </List.Item>
-            )}
+            dataSource={accounts.data?.nodes || []}
+            renderItem={renderItem}
           />
         </div>
       </Wrapper>

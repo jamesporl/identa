@@ -13,8 +13,9 @@ const AccountCompanyClinicLinkSchema = new Schema(
     company: SimpleCompanySchema,
     account: SimpleAccountSchema,
     clinic: SimpleClinicSchema,
+    isPractitioner: { type: Boolean, default: false },
   },
-  { collection: 'AccountCompanyLink', timestamps: true },
+  { collection: 'AccountCompanyClinicLink', timestamps: true },
 );
 
 AccountCompanyClinicLinkSchema.index({ 'clinic._id': 1 });

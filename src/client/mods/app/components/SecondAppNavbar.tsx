@@ -64,7 +64,11 @@ function SecondAppNavbar() {
   const sheetCtx = useContext(SheetContext);
 
   const handleClickAddPatientBtn = () => {
-    modalCtx.openModal('addPatientForm', 'Add Patient', {}, { width: 520, footer: false });
+    modalCtx.openModal('addPatientForm', 'Add Patient', {}, { width: 500, footer: false });
+  };
+
+  const handleClickAddVisitsBtn = () => {
+    modalCtx.openModal('addVisitsForm', 'Add Visit', {}, { width: 700, footer: false });
   };
 
   const handleClickMenu = (ev: { key: string }) => {
@@ -93,10 +97,20 @@ function SecondAppNavbar() {
       </div>
       <div className="secondappnavbar-right">
         <Space size={8}>
-          <Button icon={<PlusOutlined />} size="small" onClick={() => undefined} type="text">
+          <Button
+            icon={<PlusOutlined />}
+            size="small"
+            onClick={handleClickAddVisitsBtn}
+            type="text"
+          >
             Add Visit
           </Button>
-          <Button icon={<PlusOutlined />} size="small" onClick={handleClickAddPatientBtn} type="text">
+          <Button
+            icon={<PlusOutlined />}
+            size="small"
+            onClick={handleClickAddPatientBtn}
+            type="text"
+          >
             Add Patient
           </Button>
         </Space>

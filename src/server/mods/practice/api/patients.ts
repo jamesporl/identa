@@ -44,7 +44,7 @@ const patients = authenticatedProcedure.input(
     const { page, pageSize, searchString } = input;
     const filter: { [key: string]: unknown } = { companyId, clinicId };
     if (searchString) {
-      const pattern = new RegExp(`/^${searchString}/`, 'i');
+      const pattern = new RegExp(`^${searchString}`, 'i');
       filter.name = { $regex: pattern };
     }
     const totalCount = await MPatientClinicLink.count(filter);

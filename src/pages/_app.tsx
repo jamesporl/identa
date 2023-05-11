@@ -9,8 +9,13 @@ import getPageTitle from 'client/core/utils/getPageTitle';
 import { RoleKey } from 'server/mods/base/db/_types';
 import AuthContext from 'client/core/mobx/Auth';
 import theme from 'client/core/styles/theme';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import trpc from '../utils/trpc';
 import 'antd/dist/reset.css';
+
+// Initialize dayjs plugins somewhere in the project root
+dayjs.extend(utc);
 
 function MyApp({ Component, pageProps }: AppProps) {
   const authCtx = useContext(AuthContext);

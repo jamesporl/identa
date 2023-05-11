@@ -1,4 +1,4 @@
-import { cleanEnv, str, num } from 'envalid';
+import { cleanEnv, str } from 'envalid';
 import dotenv from 'dotenv';
 
 dotenv.config();

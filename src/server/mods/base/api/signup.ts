@@ -48,12 +48,12 @@ const signup = publicProcedure.input(
       email,
       login: email,
       password: hashedPw,
-      roles: [{ key: RoleKey.user, perms: [] }],
+      roles: [{ roleKey: RoleKey.user, perms: [] }],
       createdById: newId,
       updatedById: newId,
     }).save();
 
-    const verificationToken = await generateVerificationToken(newId);
+    const verificationToken = generateVerificationToken(newId);
 
     await sendWelcomeWithVerificationCodeEmail(newId);
 
