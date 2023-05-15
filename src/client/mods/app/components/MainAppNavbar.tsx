@@ -1,13 +1,16 @@
 import React, { useContext } from 'react';
-import { BankOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
 import {
-  Avatar, Button, Space, Switch, Typography,
+  BankOutlined, LogoutOutlined, SearchOutlined, SettingOutlined, UserOutlined,
+} from '@ant-design/icons';
+import {
+  Avatar, Button, Space, Switch, Typography, Dropdown,
 } from 'antd';
 import Link from 'next/link';
 import Image from 'next/image';
 import styled from 'styled-components';
 import { observer } from 'mobx-react';
 import AuthContext from 'client/core/mobx/Auth';
+import { useRouter } from 'next/router';
 
 const Wrapper = styled.div`
   display: flex;
@@ -50,13 +53,38 @@ const Wrapper = styled.div`
         margin-left: 0.5rem;
       }
     }
+
+    .account-avatar {
+      .ant-avatar {
+        &:hover, &:active {
+          cursor: pointer;
+        }
+      }
+    }
   }
 `;
 
 function MainAppNavbar() {
+  const router = useRouter();
+
   const authCtx = useContext(AuthContext);
 
   const company = authCtx.myAccount?.company?.name || '...';
+
+  const handleClickProfileMenu = ({ key }: { key: string }) => {
+    if (key === 'logout') {
+      authCtx.logout();
+      router.push('/account/login');
+    }
+  };
+
+  const profileDropdownItems = [
+    {
+      key: 'logout',
+      label: 'Log out',
+      icon: <LogoutOutlined />,
+    },
+  ];
 
   return (
     <Wrapper>
@@ -70,7 +98,12 @@ function MainAppNavbar() {
           <div className="company-name">
             {company}
           </div>
-          <Button icon={<BankOutlined />} size="small" />
+          <Space size={8}>
+            <Button icon={<BankOutlined />} size="small" />
+            <Link href="/app/settings/accounts">
+              <Button icon={<SettingOutlined />} size="small" />
+            </Link>
+          </Space>
         </div>
 
       </div>
@@ -86,7 +119,14 @@ function MainAppNavbar() {
             <Button icon={<SearchOutlined />} size="small" onClick={() => undefined} type="text" />
           </div>
           <div className="account-avatar">
-            <Avatar size="small" icon={<UserOutlined />} />
+            <Dropdown
+              menu={{ items: profileDropdownItems, onClick: handleClickProfileMenu }}
+              trigger={['click']}
+              placement="bottomRight"
+              overlayStyle={{ width: '140px' }}
+            >
+              <Avatar size="small" icon={<UserOutlined />} />
+            </Dropdown>
           </div>
         </Space>
       </div>

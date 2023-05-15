@@ -49,11 +49,6 @@ const MENU_ITEMS = [
     key: 'calendar',
     href: '/app/calendar',
   },
-  {
-    label: 'Settings',
-    key: 'settings',
-    href: '/app/settings/accounts',
-  },
 ];
 
 function SecondAppNavbar() {

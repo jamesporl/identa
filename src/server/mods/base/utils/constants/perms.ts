@@ -2,7 +2,7 @@ import { PermKey } from '../../db/_types';
 
 export enum PermShortKey {
   su = 'su',
-  mp = 'mp',
+  ca = 'ca',
 }
 
 interface PermObj {
@@ -20,10 +20,10 @@ const perms: PermObj[] = [
     desc: 'Access all data and perform all kinds of actions on them',
   },
   {
-    key: PermKey.managePatients,
-    label: 'Manage Patients',
-    shortKey: PermShortKey.mp,
-    desc: 'Allow users to create, view, update, and delete patients',
+    key: PermKey.companyAdmin,
+    label: 'Company Admin',
+    shortKey: PermShortKey.ca,
+    desc: 'Allows a user to manage some company and clinic settings, accounts, and other administrative functionalities',
   },
 ];
 

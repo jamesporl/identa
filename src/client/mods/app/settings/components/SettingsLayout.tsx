@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import UIContext from 'client/core/mobx/UI';
-import AppLayout from '../../components/AppLayout';
+import { Menu } from 'antd';
+import Link from 'next/link';
+import AppSingleHeaderLayout from '../../components/AppSingleHeaderLayout';
 
 type SettingsLayoutProps = {
   children: ReactNode;
@@ -16,18 +18,12 @@ interface WrapperProps {
 const Wrapper = styled.div<WrapperProps>`
   display: flex;
 
-  .settings-menu {
-    width: 220px;
-    padding: 2rem;
-    height: ${(props) => props.screenheight}px;
-    border-right: 1px solid #dddddd;
-
-    .head {
-      text-transform: uppercase;
-      font-size: 1rem;
-      font-weight: 500;  
-      letter-spacing: 1px;
-    }
+  .settings-title {
+    color: ${(props) => props.theme.primary};
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: 2rem;
+    text-transform: uppercase;
   }
 
   .settings-page-content {
@@ -38,17 +34,36 @@ const Wrapper = styled.div<WrapperProps>`
 function SettingsLayout({ children }: SettingsLayoutProps) {
   const uiCtx = useContext(UIContext);
 
+  const items = [
+    {
+      key: 'settings',
+      type: 'group',
+      label: <div className="settings-title">Settings</div>,
+    },
+    {
+      key: 'accounts',
+      label: <Link href="/app/settings/accounts">Accounts</Link>,
+    },
+    {
+      key: 'company',
+      label: <Link href="/app/settings/company">Company</Link>,
+    },
+  ];
   return (
-    <AppLayout>
+    <AppSingleHeaderLayout>
       <Wrapper screenheight={uiCtx.screenheight}>
-        <div className="settings-menu">
-          <div className="head">Settings</div>
-        </div>
+        <Menu
+          style={{ width: 256 }}
+          defaultSelectedKeys={['accounts']}
+          defaultOpenKeys={['accounts']}
+          mode="inline"
+          items={items}
+        />
         <div className="settings-page-content">
           {children}
         </div>
       </Wrapper>
-    </AppLayout>
+    </AppSingleHeaderLayout>
   );
 }
 

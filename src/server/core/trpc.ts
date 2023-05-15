@@ -1,6 +1,6 @@
 import { inferAsyncReturnType, initTRPC, TRPCError } from '@trpc/server';
 import type { CreateExpressContextOptions } from '@trpc/server/adapters/express';
-import { PermKey } from 'server/mods/base/db/_types';
+import { PermKey, RoleKey } from '../mods/base/db/_types';
 import getAccountFromJwt, { AccountContext } from '../mods/base/utils/getAccountFromJwt';
 
 export const createContext = ({ req }: CreateExpressContextOptions): AccountContext => {
@@ -18,7 +18,7 @@ export const { router } = t;
 export const middleware = t.middleware; // eslint-disable-line prefer-destructuring
 export const publicProcedure = t.procedure;
 
-const isAuthenticated = middleware(async ({ ctx, next }) => {
+const isAuthenticated = middleware(({ ctx, next }) => {
   if (ctx.accountId && ctx.roleKey) {
     let perms: PermKey[] = [];
     if (ctx.perms) {
@@ -37,3 +37,12 @@ const isAuthenticated = middleware(async ({ ctx, next }) => {
 });
 
 export const authenticatedProcedure = publicProcedure.use(isAuthenticated);
+
+const isCompanyAdmin = isAuthenticated.unstable_pipe(({ ctx, next }) => {
+  if (ctx.companyId && ctx.roleKey === RoleKey.user && ctx.perms.includes(PermKey.companyAdmin)) {
+    return next({ ctx });
+  }
+  throw new TRPCError({ code: 'UNAUTHORIZED' });
+});
+
+export const companyAdminProcedure = publicProcedure.use(isCompanyAdmin);

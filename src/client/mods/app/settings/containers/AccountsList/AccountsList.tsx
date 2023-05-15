@@ -22,7 +22,7 @@ interface WrapperProps {
 
 const Wrapper = styled.div<WrapperProps>`
   padding-top: 2rem;
-  height: ${(props) => props.screenheight - 90}px;
+  height: ${(props) => props.screenheight - 50}px;
   overflow: hidden;
   
   .header-container {

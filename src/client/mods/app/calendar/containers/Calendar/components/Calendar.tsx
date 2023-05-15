@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
 import styled from 'styled-components';
 import FullCalendar from '@fullcalendar/react';
@@ -8,6 +8,9 @@ import interactionPlugin from '@fullcalendar/interaction';
 import momentTimezone from '@fullcalendar/moment-timezone';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import UIContext from 'client/core/mobx/UI';
+import LIST_LIMIT from 'client/core/utils/constants/LIST_LIMIT';
+import trpc from 'utils/trpc';
+import dayjs from 'dayjs';
 
 const FullCalendarWrapper = styled.div`
   .fc .fc-toolbar.fc-header-toolbar {
@@ -18,7 +21,7 @@ const FullCalendarWrapper = styled.div`
     line-height: 1.5715;
     height: 32px;
     padding: 2.4px 15px;
-    border-radius: 2px;
+    border-radius: 8px;
     color: ${({ theme: { primary } }) => primary};
     background-color: #fff;
     border-color: ${({ theme: { primary } }) => primary};
@@ -35,9 +38,14 @@ const FullCalendarWrapper = styled.div`
     border-color: rgba(0, 0, 0, 0.6);
   }
 
+  .fc .fc-button-primary:not(:disabled).fc-button-active {
+    background-color: ${({ theme: { primary } }) => primary};
+  }
+
   h2.fc-toolbar-title {
-    font-size: 1.2rem;
-    font-weight: 500;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: ${({ theme: { primary } }) => primary};
   }
 
   .fc .fc-col-header-cell-cushion {
@@ -50,35 +58,30 @@ const FullCalendarWrapper = styled.div`
 `;
 
 function Calendar() {
-  // const fullCalendarRef = useRef();
+  const [viewDates, setViewDates] = useState<{ startAt: Date, endAt: Date } | null>(null);
 
   const uiCtx = useContext(UIContext);
 
-  const handleChangeDates = (ev) => {
-    console.log(ev);
+  const visits = trpc.practice.visits.useQuery({
+    page: 1,
+    pageSize: LIST_LIMIT,
+    startAt: dayjs(viewDates?.startAt).utc().format(),
+    endAt: dayjs(viewDates?.endAt).utc().format(),
+  }, { enabled: !!viewDates });
+
+  const handleChangeDates = ({ start, end }: { start: Date, end: Date }) => {
+    setViewDates({ startAt: start, endAt: end });
   };
 
-  const handleClickEvent = (ev) => {
-    console.log(ev);
+  const handleClickEvent = () => {
+
   };
 
-  const events = [
-    {
-      title: 'event1',
-      start: '2023-05-11T04:00:00',
-      end: '2023-05-11T06:00:00',
-    },
-    {
-      title: 'event2',
-      start: '2023-05-17T16:00:00',
-      end: '2023-05-17T19:00:00',
-    },
-    {
-      title: 'event2',
-      start: '2023-05-22T11:00:00',
-      end: '2023-05-22T13:00:00',
-    },
-  ];
+  const events = (visits.data?.nodes || []).map((ev) => ({
+    title: ev.patient.name,
+    start: ev.startAt,
+    end: ev.endAt,
+  }));
 
   return (
     <FullCalendarWrapper>
