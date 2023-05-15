@@ -8,7 +8,7 @@ export enum RoleKey {
 export const ROLE_KEY_VALUES = Object.values(RoleKey);
 
 export enum PermKey {
-  managePatients = 'managePatients',
+  companyAdmin = 'companyAdmin',
   superAdmin = 'superAdmin',
 }
 
@@ -17,6 +17,15 @@ export const PERM_KEY_VALUES = Object.values(RoleKey);
 export interface AccountRole {
   roleKey: RoleKey;
   perms: PermKey[];
+}
+
+export interface Address {
+  line1?: string;
+  line2?: string;
+  brgy?: string;
+  city?: string;
+  province?: string;
+  postalCode?: string;
 }
 
 export interface Account extends Document {
@@ -53,6 +62,7 @@ export interface AccountEmailVerCode extends Document {
 
 export interface Company extends Document {
   name: string;
+  loginPrefix?: string;
   ownedById: Types.ObjectId;
   isActive: boolean;
   createdById: Types.ObjectId;
@@ -64,6 +74,7 @@ export interface Company extends Document {
 export interface Clinic extends Document {
   name: string;
   companyId: Types.ObjectId;
+  address?: Address;
   isActive: boolean;
   createdById: Types.ObjectId;
   updatedById: Types.ObjectId;

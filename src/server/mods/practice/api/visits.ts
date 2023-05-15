@@ -56,7 +56,7 @@ const visits = authenticatedProcedure.input(
     const visitDocs = await MVisit.find(filter)
       .limit(pageSize)
       .skip((page - 1) * pageSize)
-      .sort({ startAt: 1 })
+      .sort({ _id: 1, startAt: 1 })
       .lean();
 
     const accountIds = visitDocs.map((v) => v.accountId);
