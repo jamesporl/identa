@@ -90,7 +90,7 @@ function MainAppNavbar() {
     <Wrapper>
       <div className="mainappnavbar-left">
         <div>
-          <Link href="/" passHref>
+          <Link href="/app/patients" passHref>
             <Image src="/logo-icon.png" height={30} width={30} alt="logo" />
           </Link>
         </div>

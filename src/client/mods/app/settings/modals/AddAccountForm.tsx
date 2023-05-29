@@ -17,33 +17,25 @@ const Wrapper = styled.div`
 function AddAccountForm() {
   const modalCtx = useContext(ModalContext);
 
-  const addAccount = trpc.practice.addAccount.useMutation({
+  const addAccount = trpc.practiceAdmin.addAccount.useMutation({
     onError: (error) => message.error(error.message, 1),
     onSuccess: () => undefined,
   });
 
   const handleSubmitAddAccount = (values: {
-    firstName: string,
-    lastName: string,
-    nameSuffix?: string,
-    professionalSuffix?: string,
+    name: string,
     login: string,
     password: string,
-    title?: string,
     isPractitioner?: boolean,
   }) => {
     const {
-      lastName,
-      firstName,
-      nameSuffix,
-      professionalSuffix,
+      name,
       login,
       password,
-      title,
       isPractitioner = false,
     } = values;
     addAccount.mutate({
-      lastName, firstName, nameSuffix, professionalSuffix, login, password, title, isPractitioner,
+      name, login, password, isPractitioner,
     });
     modalCtx.closeModal();
   };

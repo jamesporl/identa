@@ -1,17 +1,16 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
-import { MAccount, MAccountCompanyLink } from '../../base/db';
-import { authenticatedProcedure } from '../../../core/trpc';
+import { MAccount, MAccountCompanyLink } from '../../../base/db';
+import { authenticatedProcedure } from '../../../../core/trpc';
 import { AccountsFilter } from './_types';
 
 export const accountZObj = z.object({
   _id: z.string(),
-  firstName: z.string(),
-  lastName: z.string(),
+  name: z.string(),
   login: z.string(),
   title: z.optional(z.string()),
-  nameSuffix: z.optional(z.string()),
-  professionalSuffix: z.optional(z.string()),
+  phone: z.optional(z.string()),
+  image: z.optional(z.string()),
   isPractitioner: z.boolean(),
 });
 
@@ -39,10 +38,10 @@ const accounts = authenticatedProcedure.input(
     const {
       page, pageSize, searchString, filters,
     } = input;
-    const filter: { [key: string]: unknown } = { 'company._id': companyId };
+    const filter: { [key: string]: unknown } = { companyId };
     if (searchString) {
       const pattern = new RegExp(`^${searchString}`, 'i');
-      filter['account.name'] = { $regex: pattern };
+      filter.name = { $regex: pattern };
     }
     if (filters?.length) {
       if (filters.includes(AccountsFilter.practitioners)) {
@@ -56,22 +55,21 @@ const accounts = authenticatedProcedure.input(
       .sort({ 'account.name': 1 })
       .lean();
 
-    const accountIds = links.map((l) => l.account._id);
+    const accountIds = links.map((l) => l.accountId);
     const accountDocs = await MAccount.find({ _id: { $in: accountIds } }).lean();
 
     const nodes = links.map((link) => {
       const account = accountDocs.find(
-        (a) => a._id.toHexString() === link.account._id.toHexString(),
+        (a) => a._id.toHexString() === link.accountId.toHexString(),
       );
       return {
         _id: account?._id.toHexString() || '',
-        firstName: account?.firstName || '',
-        lastName: account?.lastName || '',
+        name: link.name,
         login: account?.login || '',
-        isPractitioner: !!account?.isPractitioner,
-        title: account?.title,
-        nameSuffix: account?.nameSuffix,
-        professionalSuffix: account?.professionalSuffix,
+        isPractitioner: link.isPractitioner,
+        title: link.title,
+        phone: link.phone,
+        image: link.image,
       };
     });
 

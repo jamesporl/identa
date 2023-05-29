@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
-  Col, Row, Button, Form, Input, message, Typography,
+  Button, Form, Input, message, Typography,
 } from 'antd';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -15,10 +15,6 @@ function Signup() {
 
   const router = useRouter();
 
-  useEffect(() => {
-    console.log('Loaded - Signup');
-  }, []);
-
   const signup = trpc.base.signup.useMutation({
     onError: (error) => message.error(error.message, 0.5),
     onSuccess: async (result) => {
@@ -30,14 +26,10 @@ function Signup() {
   const handleSubmitSignup = (values: {
     email: string,
     password: string,
-    firstName: string,
-    lastName: string,
   }) => {
     signup.mutate({
       email: values.email,
       password: values.password,
-      firstName: values.firstName,
-      lastName: values.lastName,
     });
   };
 
@@ -47,18 +39,6 @@ function Signup() {
         <title>{getPageTitle('Sign Up')}</title>
       </Head>
       <Form form={signupForm} onFinish={handleSubmitSignup}>
-        <Row gutter={8}>
-          <Col span={12}>
-            <Form.Item name="firstName" rules={[{ required: true, message: 'First name is required' }]}>
-              <Input placeholder="First name" disabled={signup.isLoading} />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item name="lastName" rules={[{ required: true, message: 'Last name is required' }]}>
-              <Input placeholder="Last name" disabled={signup.isLoading} />
-            </Form.Item>
-          </Col>
-        </Row>
         <Form.Item name="email" rules={[{ required: true, message: 'Email address is required' }]}>
           <Input placeholder="Email" disabled={signup.isLoading} />
         </Form.Item>
@@ -66,24 +46,24 @@ function Signup() {
           <Input.Password placeholder="Password" disabled={signup.isLoading} />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" block htmlType="submit" loading={signup.isLoading}>Sign up</Button>
+          <Button type="primary" block htmlType="submit" loading={signup.isLoading}>
+            Sign up
+          </Button>
         </Form.Item>
       </Form>
-      <div>
+      <Typography.Text type="secondary">
+        {'By continuing, you agree to our '}
+        <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">
+          Terms and Conditions.
+        </a>
+      </Typography.Text>
+      <div style={{ marginTop: '1.5rem', fontStyle: 'italic', color: '#0D2175' }}>
         <Typography.Text type="secondary">
-          {'By continuing, you agree to our '}
-          <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">
-            Terms and Conditions.
-          </a>
+          {'Already have an account? '}
+          <Link href="/account/login" as="/account/login">
+            Log in here.
+          </Link>
         </Typography.Text>
-        <div style={{ marginTop: '1.5rem', fontStyle: 'italic', color: '#0D2175' }}>
-          <Typography.Text type="secondary">
-            {'Already have an account? '}
-            <Link href="/account/login" as="/account/login">
-              Log in here.
-            </Link>
-          </Typography.Text>
-        </div>
       </div>
     </AuthLayout>
   );

@@ -9,7 +9,6 @@ import getPageTitle from 'client/core/utils/getPageTitle';
 import trpc from 'utils/trpc';
 import AuthContext from 'client/core/mobx/Auth';
 import AuthLayout from '../../components/AuthLayout';
-import { RoleKey } from '../../../../../server/mods/base/db/_types';
 
 function Login() {
   const [loginForm] = Form.useForm();
@@ -27,7 +26,7 @@ function Login() {
         authCtx.login(result.authToken);
         const myAccount = await trpcCtx.base.myAccount.fetch();
         authCtx.setMyAccount(myAccount);
-        if (myAccount.roleKey === RoleKey.admin) {
+        if (myAccount.isAdmin) {
           router.push('/admin/accounts');
         } else {
           router.push('/app');

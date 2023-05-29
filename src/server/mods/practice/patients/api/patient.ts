@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
-import { authenticatedProcedure } from '../../../core/trpc';
+import { authenticatedProcedure } from '../../../../core/trpc';
 import { MPatient, MPatientClinicLink } from '../db';
 import { computeAge, patientZObj } from './patients';
 

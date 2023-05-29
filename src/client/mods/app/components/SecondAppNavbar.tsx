@@ -1,4 +1,4 @@
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, SolutionOutlined } from '@ant-design/icons';
 import { Menu, Button, Space } from 'antd';
 import { observer } from 'mobx-react';
 import Link from 'next/link';
@@ -7,6 +7,7 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import UIContext from 'client/core/mobx/UI';
 import SheetContext from 'client/core/mobx/Sheet';
+import AuthContext from 'client/core/mobx/Auth';
 
 const Wrapper = styled.div`
   display: flex;
@@ -36,6 +37,10 @@ const Wrapper = styled.div`
       }
     }
   }
+
+  .clinic-name {
+    white-space: nowrap;
+  }
 `;
 
 const MENU_ITEMS = [
@@ -57,6 +62,8 @@ function SecondAppNavbar() {
   const modalCtx = useContext(ModalContext);
 
   const sheetCtx = useContext(SheetContext);
+
+  const authCtx = useContext(AuthContext);
 
   const handleClickAddPatientBtn = () => {
     modalCtx.openModal('addPatientForm', 'Add Patient', {}, { width: 500, footer: false });
@@ -92,6 +99,15 @@ function SecondAppNavbar() {
       </div>
       <div className="secondappnavbar-right">
         <Space size={8}>
+          <div className="clinic-name">
+            {authCtx.myAccount?.clinic?.name || ''}
+          </div>
+          <Button
+            icon={<SolutionOutlined />}
+            size="small"
+            onClick={handleClickAddVisitsBtn}
+            type="text"
+          />
           <Button
             icon={<PlusOutlined />}
             size="small"

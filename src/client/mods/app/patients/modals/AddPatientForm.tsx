@@ -6,7 +6,7 @@ import { type Dayjs } from 'dayjs';
 import styled from 'styled-components';
 import ModalContext from 'client/core/mobx/Modal';
 import trpc from 'utils/trpc';
-import { BirthSex } from 'server/mods/practice/db/_types';
+import { BirthSex } from 'server/mods/practice/patients/db/_types';
 
 const Wrapper = styled.div`
   .footer {
@@ -25,7 +25,7 @@ const birthSexOptions = [
 function AddPatientForm() {
   const modalCtx = useContext(ModalContext);
 
-  const addPatient = trpc.practice.addPatientToClinicByStaff.useMutation({
+  const addPatient = trpc.practicePatients.addPatient.useMutation({
     onError: (error) => message.error(error.message, 0.5),
     onSuccess: () => undefined,
   });

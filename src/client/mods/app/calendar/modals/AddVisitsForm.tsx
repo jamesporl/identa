@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 function AddVisitsForm() {
   const modalCtx = useContext(ModalContext);
 
-  const addVisit = trpc.practice.addVisits.useMutation({
+  const addVisit = trpc.practiceVisits.addVisits.useMutation({
     onError: (error) => message.error(error.message, 0.5),
     onSuccess: () => undefined,
   });

@@ -11,10 +11,11 @@ import PageTitle from 'client/mods/app/components/PageTitle';
 import Pagination from 'client/mods/app/components/Pagination';
 import { FilterOutlined, PlusOutlined } from '@ant-design/icons';
 import ModalContext from 'client/core/mobx/Modal';
-import trpc from 'utils/trpc';
+import trpc, { RouterOutput } from 'utils/trpc';
 import LIST_LIMIT from 'client/core/utils/constants/LIST_LIMIT';
 import SettingsLayout from '../../components/SettingsLayout';
-import computeAccountName, { Account } from './utils/computeAccountName';
+
+type Account = RouterOutput['practiceAdmin']['accounts']['nodes'][number];
 
 interface WrapperProps {
   screenheight: number;
@@ -70,7 +71,7 @@ function AccountsList() {
 
   const [page, setPage] = useState(sheetCtx.sheet?.page || 1);
 
-  const accounts = trpc.practice.accounts.useQuery({ page, pageSize: LIST_LIMIT });
+  const accounts = trpc.practiceAdmin.accounts.useQuery({ page, pageSize: LIST_LIMIT });
 
   useEffect(() => {
     if (sheetCtx.sheet?.pathname === router.pathname) {
@@ -108,7 +109,7 @@ function AccountsList() {
       <List.Item>
         <List.Item.Meta
           avatar={<Avatar src="/profile-placeholder.jpg" size={60} />}
-          title={computeAccountName(item)}
+          title={item.name}
           description={(
             <>
               {item.login}

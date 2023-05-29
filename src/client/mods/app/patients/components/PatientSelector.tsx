@@ -13,7 +13,7 @@ interface PatientSelectorProps {
 function PatientSelector({ onChange, value }: PatientSelectorProps) {
   const [searchString, setSearchString] = useState('');
 
-  const patients = trpc.practice.patients.useQuery({ page: 1, pageSize: 10, searchString });
+  const patients = trpc.practicePatients.patients.useQuery({ page: 1, pageSize: 10, searchString });
 
   const options = (patients.data?.nodes || []).map((pt) => ({
     value: pt._id, label: pt.name,

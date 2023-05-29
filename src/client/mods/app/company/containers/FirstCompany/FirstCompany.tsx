@@ -6,7 +6,6 @@ import {
 } from 'antd';
 import { useRouter } from 'next/router';
 import trpc from 'utils/trpc';
-import { RoleKey } from 'server/mods/base/db/_types';
 import AuthContext from 'client/core/mobx/Auth';
 
 const Wrapper = styled.div`
@@ -58,23 +57,25 @@ function FirstCompany() {
     onError: (error) => message.error(error.message, 0.5),
     onSuccess: async (authToken) => {
       if (authToken) {
+        console.log(authToken);
         authCtx.login(authToken);
         const myAccount = await trpcCtx.base.myAccount.fetch();
+        console.log(myAccount);
         authCtx.setMyAccount(myAccount);
         router.push('/app');
       }
     },
   });
 
-  const addCompanyByUser = trpc.base.addCompanyByUser.useMutation({
+  const addCompany = trpc.base.addCompany.useMutation({
     onError: (error) => message.error(error.message, 0.5),
     onSuccess: async (result) => {
-      switchAccountContext.mutate({ roleKey: RoleKey.user, companyId: result._id });
+      switchAccountContext.mutate({ companyId: result._id });
     },
   });
 
   const handleSubmitAddCompany = (values: { name: string }) => {
-    addCompanyByUser.mutate({ name: values.name });
+    addCompany.mutate({ name: values.name });
   };
 
   return (
@@ -99,10 +100,9 @@ function FirstCompany() {
               htmlType="submit"
               size="large"
               block
-              disabled={addCompanyByUser.isLoading || switchAccountContext.isLoading}
+              disabled={addCompany.isLoading || switchAccountContext.isLoading}
             >
               Submit
-
             </Button>
           </Form.Item>
         </Form>

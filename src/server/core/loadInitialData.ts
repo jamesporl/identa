@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { PermKey, RoleKey } from '../mods/base/db/_types';
+import { CompanyPermKey } from '../mods/base/db/_types';
 import {
   MAccount, MCompany, MClinic, MAccountCompanyLink, MAccountCompanyClinicLink,
 } from '../mods/base/db';
@@ -10,18 +10,14 @@ export default async function loadInitialData() {
 
   const adminAccountDoc = await MAccount.findOne({ login: adminEmail });
   if (!adminAccountDoc) {
-    const adminFirstName = 'James';
-    const adminLastName = 'Guzman';
+    const adminName = 'James Guzman';
     const adminPwHash = await hashPassword('admin123');
     await new MAccount({
       email: adminEmail,
       login: adminEmail,
       password: adminPwHash,
-      firstName: adminFirstName,
-      lastName: adminLastName,
-      name: `${adminFirstName} ${adminLastName}`,
-      isEmailVerified: true,
-      roles: [{ roleKey: RoleKey.admin, perms: [PermKey.superAdmin] }],
+      name: adminName,
+      isAdmin: true,
     }).save();
   }
 
@@ -61,22 +57,25 @@ export default async function loadInitialData() {
       email: userEmail,
       login: userEmail,
       password: userPwHash,
-      firstName: userFirstName,
-      lastName: userLastName,
       name: userName,
-      isEmailVerified: true,
-      roles: [{ roleKey: RoleKey.user }],
     }).save();
 
     await new MAccountCompanyLink({
-      account: { _id: userAccountId, name: userName },
-      company: { _id: companyId, name: companyName },
+      companyId,
+      accountId: userAccountId,
+      name: userName,
+      isPractitioner: true,
+      hexColor: '#89CFF0',
+      perms: [{ roleKey: CompanyPermKey.companyAdmin }],
+      isActive: true,
     }).save();
 
     await new MAccountCompanyClinicLink({
-      account: { _id: userAccountId, name: userName },
-      company: { _id: companyId, name: companyName },
-      clinic: { _id: clinicId, name: clinicName },
+      companyId,
+      clinicId,
+      accountId: userAccountId,
+      name: userName,
+      isPractitioner: true,
     }).save();
   }
 }

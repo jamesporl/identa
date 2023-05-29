@@ -42,7 +42,7 @@ function PatientView() {
 
   const { patientId = '' } = router.query as { patientId?: string };
 
-  const patient = trpc.practice.patient.useQuery({ patientId }, { enabled: !!patientId });
+  const patient = trpc.practicePatients.patient.useQuery({ patientId }, { enabled: !!patientId });
 
   useEffect(() => {
     if (sheetCtx.sheet?.pathname === router.pathname) {

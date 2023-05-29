@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
-import { MAccount } from '../../base/db';
-import { authenticatedProcedure } from '../../../core/trpc';
-import { MPatient, MVisit } from '../db';
+import { MAccount } from '../../../base/db';
+import { authenticatedProcedure } from '../../../../core/trpc';
+import { MVisit } from '../db';
+import { MPatient } from '../../patients/db';
 
 // todo: validate page size
 
