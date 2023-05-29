@@ -3,8 +3,10 @@ import { Company } from './_types';
 
 const CompanySchema = new Schema(
   {
-    name: { type: String, trim: true },
-    loginPrefix: { type: String, trim: true, lowercase: true },
+    name: { type: String, trim: true, required: true },
+    loginPrefix: {
+      type: String, trim: true, lowercase: true, required: true, unique: true,
+    },
     isActive: { type: Boolean, default: true },
     ownedById: { type: Types.ObjectId },
     createdById: { type: Types.ObjectId },

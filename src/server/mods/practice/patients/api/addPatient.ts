@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
-import { authenticatedProcedure } from '../../../core/trpc';
+import { authenticatedProcedure } from '../../../../core/trpc';
 import { MPatient, MPatientClinicLink } from '../db';
 import { BirthSex } from '../db/_types';
 
-const addPatientToClinicByStaff = authenticatedProcedure.input(
+const addPatient = authenticatedProcedure.input(
   z.object({
     firstName: z.string(),
     lastName: z.string(),
@@ -48,4 +48,4 @@ const addPatientToClinicByStaff = authenticatedProcedure.input(
     }).save();
   });
 
-export default addPatientToClinicByStaff;
+export default addPatient;

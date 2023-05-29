@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 import { ThemeProvider } from 'styled-components';
 import { AUTH_TOKEN_KEY } from 'client/core/utils/storageKeys';
 import getPageTitle from 'client/core/utils/getPageTitle';
-import { RoleKey } from 'server/mods/base/db/_types';
 import AuthContext from 'client/core/mobx/Auth';
 import theme from 'client/core/styles/theme';
 import dayjs from 'dayjs';
@@ -49,12 +48,12 @@ function MyApp({ Component, pageProps }: AppProps) {
     const isNotPublicPage = isAppPage || isAdminPage;
     if (!authCtx.isLoadingMyAccount) {
       if (authCtx.myAccount) {
-        if (authCtx.myAccount.roleKey === RoleKey.admin && isAppPage) {
+        if (authCtx.myAccount.isAdmin && isAppPage) {
           router.push('/site-admin');
-        } else if (authCtx.myAccount.roleKey === RoleKey.user && isAdminPage) {
+        } else if (!authCtx.myAccount.isAdmin && isAdminPage) {
           router.push('/app');
         }
-      } else if (!isNotPublicPage) {
+      } else if (isNotPublicPage) {
         router.push('/account/login');
       }
     }

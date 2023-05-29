@@ -5,39 +5,23 @@ import getErrorMessage from '../../../core/getErrorMessage';
 import { authenticatedProcedure } from '../../../core/trpc';
 import { MAccount } from '../db';
 import generateAuthToken from '../utils/generateAuthToken';
-import { RoleKey } from '../db/_types';
 
 const switchAccountContext = authenticatedProcedure.input(
   z.object({
-    roleKey: z.nativeEnum(RoleKey),
-    companyId: z.optional(z.string()),
+    companyId: z.string(),
     clinicId: z.optional(z.string()),
   }),
 )
   .mutation(async ({ input, ctx }) => {
-    const { accountId } = ctx;
-    const { companyId: iCompanyId, clinicId: iClinicId, roleKey } = input;
+    const { accountId, isAdmin } = ctx;
+    const { companyId: iCompanyId, clinicId: iClinicId } = input;
 
-    const account = await MAccount.findOne({ accountId }).lean();
+    const account = await MAccount.findOne({ _id: accountId }).lean();
 
-    if (roleKey === RoleKey.user) {
-      if ((!iCompanyId && iClinicId) || (!iClinicId && iCompanyId)) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Company and clinic are required',
-        });
-      }
-    } else if (iCompanyId || iClinicId) {
+    if (isAdmin) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
-        message: 'Company or clinic cannot be added for provided role',
-      });
-    }
-
-    if (roleKey === RoleKey.user && iClinicId && !iCompanyId) {
-      throw new TRPCError({
-        code: 'BAD_REQUEST',
-        message: 'Company should be provided',
+        message: 'Incorrect role',
       });
     }
 
@@ -46,8 +30,7 @@ const switchAccountContext = authenticatedProcedure.input(
     try {
       authToken = await generateAuthToken({
         account,
-        roleKey,
-        companyId: iCompanyId ? new Types.ObjectId(iCompanyId) : undefined,
+        companyId: new Types.ObjectId(iCompanyId),
         clinicId: iClinicId ? new Types.ObjectId(iClinicId) : undefined,
       });
     } catch (error) {

@@ -69,7 +69,7 @@ function PatientsList() {
 
   const [page, setPage] = useState(sheetCtx.sheet?.page || 1);
 
-  const patients = trpc.practice.patients.useQuery({ page, pageSize: LIST_LIMIT });
+  const patients = trpc.practicePatients.patients.useQuery({ page, pageSize: LIST_LIMIT });
 
   useEffect(() => {
     if (sheetCtx.sheet?.pathname === router.pathname) {

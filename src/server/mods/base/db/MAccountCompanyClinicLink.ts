@@ -1,25 +1,18 @@
-import { model, Schema } from 'mongoose';
-import { SimpleAccountSchema, SimpleCompanySchema } from './MAccountCompanyLink';
+import { model, Schema, Types } from 'mongoose';
 import { AccountCompanyClinicLink } from './_types';
-
-export const SimpleClinicSchema = new Schema(
-  {
-    name: { type: String, required: true, trim: true },
-  },
-);
 
 const AccountCompanyClinicLinkSchema = new Schema(
   {
-    company: SimpleCompanySchema,
-    account: SimpleAccountSchema,
-    clinic: SimpleClinicSchema,
+    companyId: { type: Types.ObjectId, required: true },
+    clinicId: { type: Types.ObjectId, required: true },
+    accountId: { type: Types.ObjectId, required: true },
+    name: { type: String, required: true },
     isPractitioner: { type: Boolean, default: false },
   },
   { collection: 'AccountCompanyClinicLink', timestamps: true },
 );
 
-AccountCompanyClinicLinkSchema.index({ 'clinic._id': 1 });
-AccountCompanyClinicLinkSchema.index({ 'account._id': 1 });
+AccountCompanyClinicLinkSchema.index({ companyId: 1, clinicId: 1, accountId: 1 });
 
 const MAccountCompanyClinicLink = model<AccountCompanyClinicLink>(
   'AccountCompanyClinicLink',

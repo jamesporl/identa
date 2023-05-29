@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
-import { MClinic } from '../../base/db';
-import { authenticatedProcedure } from '../../../core/trpc';
+import { MClinic } from '../../../base/db';
+import { authenticatedProcedure } from '../../../../core/trpc';
 
 const addClinic = authenticatedProcedure.input(
   z.object({

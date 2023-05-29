@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 function AddClinicForm() {
   const modalCtx = useContext(ModalContext);
 
-  const addClinic = trpc.practice.addClinic.useMutation({
+  const addClinic = trpc.practiceAdmin.addClinic.useMutation({
     onError: (error) => message.error(error.message, 1),
     onSuccess: () => undefined,
   });

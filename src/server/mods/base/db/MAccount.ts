@@ -1,16 +1,10 @@
 import { model, Schema, Types } from 'mongoose';
-import { Account, PERM_KEY_VALUES, ROLE_KEY_VALUES } from './_types';
+import { Account } from './_types';
 
-const AccountRoleSchema = new Schema(
-  {
-    roleKey: { type: String, enum: ROLE_KEY_VALUES, required: true },
-    perms: [{ type: [String], enum: PERM_KEY_VALUES }],
-  },
-  {
-    _id: false,
-  },
-);
-
+/*
+  If isAdmin, name, image, phone, and title should be maintained in this collection
+  If not isAdmin, name, title, phone and image will be from the latest CompanyAccountLink item,
+*/
 const AccountSchema = new Schema(
   {
     email: { type: String, trim: true, lowercase: true },
@@ -18,20 +12,14 @@ const AccountSchema = new Schema(
       type: String, trim: true, lowercase: true, unique: true,
     },
     username: { type: String, trim: true },
+    name: { type: String, trim: true, required: true },
+    phone: { type: String, trim: true },
+    title: { type: String, trim: true },
+    image: { type: String },
     isActive: { type: Boolean, default: true },
     isEmailVerified: { type: Boolean, default: true },
-    hexColor: { type: String },
     password: String,
-    firstName: { type: String, trim: true },
-    middleName: { type: String, trim: true },
-    lastName: { type: String, trim: true },
-    nameSuffix: { type: String, trim: true },
-    professionalSuffix: { type: String, trim: true },
-    name: { type: String, trim: true, required: true },
-    title: { type: String, trim: true },
-    isPractitioner: { type: Boolean, default: false },
-    roles: [AccountRoleSchema],
-    phone: { type: String },
+    isAdmin: { type: Boolean, default: false },
     lastUsedCompanyId: { type: Types.ObjectId },
     lastUsedClinicId: { type: Types.ObjectId },
     createdById: { type: Types.ObjectId },
@@ -41,7 +29,6 @@ const AccountSchema = new Schema(
 );
 
 AccountSchema.index({ login: 1 });
-AccountSchema.index({ name: 1 }, { collation: { locale: 'en', strength: 2 } });
 
 const MAccount = model<Account>('Account', AccountSchema);
 

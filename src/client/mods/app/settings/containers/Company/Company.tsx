@@ -7,7 +7,7 @@ import SheetContext from 'client/core/mobx/Sheet';
 import UIContext from 'client/core/mobx/UI';
 import PageTitle from 'client/mods/app/components/PageTitle';
 import trpc from 'utils/trpc';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, SolutionOutlined } from '@ant-design/icons';
 import ModalContext from 'client/core/mobx/Modal';
 import SettingsLayout from '../../components/SettingsLayout';
 
@@ -71,9 +71,9 @@ function Company() {
 
   const modalCtx = useContext(ModalContext);
 
-  const company = trpc.practice.company.useQuery();
+  const company = trpc.practiceAdmin.company.useQuery();
 
-  const clinics = trpc.practice.clinics.useQuery({ page: 1, pageSize: 20 });
+  const clinics = trpc.practiceAdmin.clinics.useQuery({ page: 1, pageSize: 20 });
 
   useEffect(() => {
     if (sheetCtx.sheet?.pathname === router.pathname) {
@@ -123,7 +123,13 @@ function Company() {
                   dataSource={clinics.data?.nodes || []}
                   renderItem={(item) => (
                     <List.Item>
-                      <List.Item.Meta title={item.name} />
+                      <List.Item.Meta title={(
+                        <>
+                          <SolutionOutlined />
+                          {` ${item.name}`}
+                        </>
+                    )}
+                      />
                     </List.Item>
                   )}
                 />

@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { differenceInYears, startOfDay } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
-import { authenticatedProcedure } from '../../../core/trpc';
+import { authenticatedProcedure } from '../../../../core/trpc';
 import { MPatient, MPatientClinicLink } from '../db';
 import { BirthSex } from '../db/_types';
 

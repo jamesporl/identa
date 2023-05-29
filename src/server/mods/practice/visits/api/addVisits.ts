@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { Types } from 'mongoose';
-import { authenticatedProcedure } from '../../../core/trpc';
+import { authenticatedProcedure } from '../../../../core/trpc';
 import { MVisit } from '../db';
 
 // todo: support multiple visits

@@ -1,23 +1,10 @@
 import { Document, Types } from 'mongoose';
 
-export enum RoleKey {
-  admin = 'appAdmin',
-  user = 'user',
-}
-
-export const ROLE_KEY_VALUES = Object.values(RoleKey);
-
-export enum PermKey {
+export enum CompanyPermKey {
   companyAdmin = 'companyAdmin',
-  superAdmin = 'superAdmin',
 }
 
-export const PERM_KEY_VALUES = Object.values(RoleKey);
-
-export interface AccountRole {
-  roleKey: RoleKey;
-  perms: PermKey[];
-}
+export const COMPANY_PERM_KEY_VALUES = Object.values(CompanyPermKey);
 
 export interface Address {
   line1?: string;
@@ -32,21 +19,16 @@ export interface Account extends Document {
   login: string;
   email?: string;
   username?: string;
-  firstName: string;
-  lastName: string;
   name: string;
-  hexColor?: string;
-  isPractitioner: boolean;
-  title?: string;
   phone?: string;
-  nameSuffix?: string;
-  professionalSuffix?: string;
+  title?: string;
+  image?: string;
+  isActive: boolean;
   isEmailVerified: boolean;
   password: string;
+  isAdmin: boolean;
   lastUsedCompanyId?: Types.ObjectId;
   lastUsedClinicId?: Types.ObjectId;
-  roles: AccountRole[];
-  isActive: boolean;
   createdById: Types.ObjectId;
   updatedById: Types.ObjectId;
   createdAt: Date;
@@ -62,7 +44,7 @@ export interface AccountEmailVerCode extends Document {
 
 export interface Company extends Document {
   name: string;
-  loginPrefix?: string;
+  loginPrefix: string;
   ownedById: Types.ObjectId;
   isActive: boolean;
   createdById: Types.ObjectId;
@@ -82,34 +64,27 @@ export interface Clinic extends Document {
   updatedAt: Date;
 }
 
-export interface SimpleAccount {
-  _id: Types.ObjectId;
-  name: string;
-}
-
-export interface SimpleCompany {
-  _id: Types.ObjectId;
-  name: string;
-}
-
-export interface SimpleClinic {
-  _id: Types.ObjectId;
-  name: string;
-}
-
 export interface AccountCompanyLink extends Document {
-  account: SimpleAccount;
-  company: SimpleCompany;
+  companyId: Types.ObjectId;
+  accountId: Types.ObjectId;
+  name: string;
   isPractitioner: boolean;
+  isActive: boolean;
+  phone?: string;
+  hexColor?: string;
+  title?: string;
+  image?: string;
+  perms: CompanyPermKey[];
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface AccountCompanyClinicLink extends Document {
-  account: SimpleAccount;
-  company: SimpleCompany;
+  companyId: Types.ObjectId;
+  clinicId: Types.ObjectId;
+  accountId: Types.ObjectId;
+  name: string;
   isPractitioner: boolean;
-  clinic: SimpleClinic;
   createdAt: Date;
   updatedAt: Date;
 }

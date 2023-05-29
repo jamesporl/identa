@@ -7,10 +7,10 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import momentTimezone from '@fullcalendar/moment-timezone';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import UIContext from 'client/core/mobx/UI';
-import LIST_LIMIT from 'client/core/utils/constants/LIST_LIMIT';
-import trpc from 'utils/trpc';
 import dayjs from 'dayjs';
+import UIContext from 'client/core/mobx/UI';
+import trpc from 'utils/trpc';
+import LIST_LIMIT from 'client/core/utils/constants/LIST_LIMIT';
 
 const FullCalendarWrapper = styled.div`
   .fc .fc-toolbar.fc-header-toolbar {
@@ -62,7 +62,7 @@ function Calendar() {
 
   const uiCtx = useContext(UIContext);
 
-  const visits = trpc.practice.visits.useQuery({
+  const visits = trpc.practiceVisits.visits.useQuery({
     page: 1,
     pageSize: LIST_LIMIT,
     startAt: dayjs(viewDates?.startAt).utc().format(),

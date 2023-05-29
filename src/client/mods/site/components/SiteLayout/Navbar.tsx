@@ -4,7 +4,6 @@ import Image from 'next/image';
 import styled from 'styled-components';
 import { Button } from 'antd';
 import { observer } from 'mobx-react';
-import { RoleKey } from 'server/mods/base/db/_types';
 import AuthContext from 'client/core/mobx/Auth';
 
 const Wrapper = styled.div`
@@ -31,18 +30,20 @@ function Navbar() {
     </Link>
   );
 
-  if (authCtx.myAccount?.roleKey === RoleKey.user) {
-    accountBtn = (
-      <Link href="/app" passHref>
-        <Button type="primary" ghost>Go to App</Button>
-      </Link>
-    );
-  } else if (authCtx.myAccount?.roleKey === RoleKey.admin) {
-    accountBtn = (
-      <Link href="/site-admin" passHref>
-        <Button type="primary" ghost>Admin Site</Button>
-      </Link>
-    );
+  if (authCtx.myAccount) {
+    if (authCtx.myAccount.isAdmin) {
+      accountBtn = (
+        <Link href="/site-admin" passHref>
+          <Button type="primary" ghost>Admin Site</Button>
+        </Link>
+      );
+    } else {
+      accountBtn = (
+        <Link href="/app" passHref>
+          <Button type="primary" ghost>Go to App</Button>
+        </Link>
+      );
+    }
   }
 
   return (

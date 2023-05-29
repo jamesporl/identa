@@ -5,22 +5,17 @@ import zxcbn from 'zxcvbn';
 import { publicProcedure } from '../../../core/trpc';
 import { MAccount } from '../db';
 import hashPassword from '../utils/hashPassword';
-import { RoleKey } from '../db/_types';
 import sendWelcomeWithVerificationCodeEmail from '../utils/sendEmailVerificationCode';
 import generateVerificationToken from '../utils/generateVerificationToken';
 
 const signup = publicProcedure.input(
   z.object({
     email: z.string().trim().toLowerCase().email('Enter a valid em-mail'),
-    firstName: z.string().trim(),
-    lastName: z.string().trim(),
     password: z.string(),
   }),
 )
   .mutation(async ({ input }) => {
-    const {
-      email, firstName, lastName, password,
-    } = input;
+    const { email, password } = input;
     const emailExists = !!(await MAccount.findOne({ email }));
     if (emailExists) {
       throw new TRPCError({
@@ -43,12 +38,11 @@ const signup = publicProcedure.input(
 
     await new MAccount({
       _id: newId,
-      firstName,
-      lastName,
+      name: email.split('@')[0],
       email,
       login: email,
       password: hashedPw,
-      roles: [{ roleKey: RoleKey.user, perms: [] }],
+      isEmailVerified: false,
       createdById: newId,
       updatedById: newId,
     }).save();
