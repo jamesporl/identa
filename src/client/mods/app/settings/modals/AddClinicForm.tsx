@@ -7,11 +7,6 @@ import ModalContext from 'client/core/mobx/Modal';
 import trpc from 'utils/trpc';
 
 const Wrapper = styled.div`
-  .footer {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: flex-end;
-  }
 `;
 
 function AddClinicForm() {

@@ -73,7 +73,6 @@ async function checkCompanyAndClinicAccess(
       finalClinicId = clinicLink.clinicId;
     }
   }
-  console.log('XXX', finalClinicId, companyLink);
   return { companyLink, clinicId: finalClinicId, ownsCompany };
 }
 
@@ -125,6 +124,7 @@ export default async function generateAuthToken({
       companyPermsToSign = lCompanyPermsToSign;
     }
   }
+
   const objToSign = {
     aid: account._id.toHexString(),
     isa: !!account.isAdmin,
@@ -133,8 +133,6 @@ export default async function generateAuthToken({
     coi: companyIdToSign ? companyIdToSign.toHexString() : undefined,
     cli: clinicIdToSign ? clinicIdToSign.toHexString() : undefined,
   };
-
-  console.log(objToSign);
 
   return jwt.sign(objToSign, config.JWT_AUTH_SECRET, { expiresIn: '30d' });
 }

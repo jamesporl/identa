@@ -1,5 +1,5 @@
 import { model, Schema, Types } from 'mongoose';
-import { BIRTH_SEX_VALUES, Patient } from '../../db/_types';
+import { BIRTH_SEX_VALUES, Patient } from './_types';
 
 const PatientSchema = new Schema(
   {

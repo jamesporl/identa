@@ -5,8 +5,12 @@ import getAccountFromJwt, { AccountContext } from '../mods/base/utils/getAccount
 
 export const createContext = ({ req }: CreateExpressContextOptions): AccountContext => {
   if (req.headers.authorization) {
-    const context = getAccountFromJwt(req.headers.authorization);
-    return context;
+    try {
+      const context = getAccountFromJwt(req.headers.authorization);
+      return context;
+    } catch (error) {
+      return {};
+    }
   }
   return {};
 };

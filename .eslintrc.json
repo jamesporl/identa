@@ -15,6 +15,7 @@
         "allow": ["_id"]
       }
     ],
+    "react/forbid-prop-types": "off",
     "react-hooks/exhaustive-deps": "off",
     "react/destructuring-assignment": "off"
   }

@@ -46,6 +46,7 @@ export interface Company extends Document {
   name: string;
   loginPrefix: string;
   ownedById: Types.ObjectId;
+  image?: string;
   isActive: boolean;
   createdById: Types.ObjectId;
   updatedById: Types.ObjectId;

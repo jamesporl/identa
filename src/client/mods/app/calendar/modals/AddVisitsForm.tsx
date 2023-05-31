@@ -11,11 +11,6 @@ import PatientSelector from '../../patients/components/PatientSelector';
 import PractitionerSelector from '../../settings/components/PractitionerSelector';
 
 const Wrapper = styled.div`
-  .footer {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: flex-end;
-  }
 `;
 
 function AddVisitsForm() {

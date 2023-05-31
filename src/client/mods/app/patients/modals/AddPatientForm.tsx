@@ -9,11 +9,6 @@ import trpc from 'utils/trpc';
 import { BirthSex } from 'server/mods/practice/patients/db/_types';
 
 const Wrapper = styled.div`
-  .footer {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: flex-end;
-  }
 `;
 
 const birthSexOptions = [

@@ -1,5 +1,5 @@
 import { model, Schema, Types } from 'mongoose';
-import { PatientClinicLink } from '../../db/_types';
+import { PatientClinicLink } from './_types';
 
 const PatientClinicLinkSchema = new Schema(
   {

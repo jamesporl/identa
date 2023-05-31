@@ -7,6 +7,7 @@ import { appTrpcRouter } from './core/appTrpcRouter';
 import connectToMongo from './core/connectToMongo';
 import loadInitialData from './core/loadInitialData';
 import config from './core/config';
+import uploadsRouter from './core/files/uploadsRouter';
 
 const PORT = 3111;
 
@@ -33,6 +34,8 @@ const PORT = 3111;
       createContext,
     }),
   );
+
+  server.use('/uploads', uploadsRouter);
 
   server.all('*', (req: Request, res: Response) => handle(req, res));
 
