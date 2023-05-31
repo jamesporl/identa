@@ -42,6 +42,12 @@ const WrappedModal = styled(Modal)<ModalProps>`
   .ant-modal-body {
     margin-top: 2rem;
   }
+
+  .footer {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
 `;
 
 type MainLayoutProps = {

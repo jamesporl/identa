@@ -8,6 +8,7 @@ const CompanySchema = new Schema(
       type: String, trim: true, lowercase: true, required: true, unique: true,
     },
     isActive: { type: Boolean, default: true },
+    image: { type: String },
     ownedById: { type: Types.ObjectId },
     createdById: { type: Types.ObjectId },
     updatedById: { type: Types.ObjectId },

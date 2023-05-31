@@ -1,5 +1,5 @@
 import { model, Schema, Types } from 'mongoose';
-import { Visit } from '../../db/_types';
+import { Visit } from './_types';
 
 const VisitSchema = new Schema(
   {

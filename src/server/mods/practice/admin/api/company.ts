@@ -7,6 +7,7 @@ const company = companyAdminProcedure.output(
   z.object({
     name: z.string(),
     loginPrefix: z.string(),
+    image: z.optional(z.string()),
   }),
 )
   .query(async ({ ctx }) => {
@@ -19,7 +20,11 @@ const company = companyAdminProcedure.output(
       });
     }
 
-    return { name: companyDoc.name || '', loginPrefix: companyDoc.loginPrefix };
+    return {
+      name: companyDoc.name,
+      loginPrefix: companyDoc.loginPrefix,
+      image: companyDoc.image,
+    };
   });
 
 export default company;

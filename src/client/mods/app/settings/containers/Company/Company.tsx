@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
-import { List, Button } from 'antd';
+import { List, Button, Typography } from 'antd';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import SheetContext from 'client/core/mobx/Sheet';
@@ -10,6 +10,7 @@ import trpc from 'utils/trpc';
 import { PlusOutlined, SolutionOutlined } from '@ant-design/icons';
 import ModalContext from 'client/core/mobx/Modal';
 import SettingsLayout from '../../components/SettingsLayout';
+import GeneralInfo from './components/GeneralInfo';
 
 interface WrapperProps {
   screenheight: number;
@@ -57,6 +58,50 @@ const Wrapper = styled.div<WrapperProps>`
     .group-content {
       margin-top: 2rem;
     }
+
+    .detail-item {
+      &:first-child > .label {
+        border-top: 1px solid ${(props) => props.theme.dark1};
+        border-top-left-radius: 1rem;
+      }
+
+      &:first-child > .value {
+        border-top: 1px solid ${(props) => props.theme.dark1};
+        border-top-right-radius: 1rem;
+      }
+
+      &:last-child > .label {
+        border-bottom-left-radius: 1rem;
+      }
+
+      &:last-child > .value {
+        border-bottom-right-radius: 1rem;
+      }
+
+      .label {
+        font-weight: 700;
+        padding: 1.5rem 1rem;
+        background-color: ${(props) => props.theme.light1};
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid ${(props) => props.theme.dark1};
+        border-left: 1px solid ${(props) => props.theme.dark1};
+        border-right: 1px solid ${(props) => props.theme.dark1};
+      }
+
+      .value {
+        padding: 1.5rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid ${(props) => props.theme.dark1};
+        border-right: 1px solid ${(props) => props.theme.dark1};
+
+        .left {
+          margin-right: 2rem;
+        }
+      }
+    }
   }
 
   
@@ -99,11 +144,18 @@ function Company() {
             <PageTitle />
           </div>
         </div>
+        <GeneralInfo company={company?.data} />
         <div className="details-container">
           <div className="content">
             <div className="group">
               <div className="group-title">
                 Clinics
+              </div>
+              <div style={{ marginTop: '1rem' }}>
+                <Typography.Text type="secondary" style={{ fontSize: '0.75rem', marginTop: '2rem' }}>
+                  If you operate in multiple locations, simply add a clinic to represent each
+                  location.
+                </Typography.Text>
               </div>
               <div className="group-actions">
                 <Button

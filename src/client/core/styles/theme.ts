@@ -9,6 +9,7 @@ const theme = {
   dark3: '#ABABAB',
   dark2: '#C6C6C6',
   dark1: '#E2E2E2',
+  light1: '#F6F6F6',
 };
 
 export default theme;
