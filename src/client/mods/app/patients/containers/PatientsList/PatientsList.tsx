@@ -132,7 +132,7 @@ function PatientsList() {
                   description={(
                     <>
                       {`${item.birthSex.toUpperCase()} | `}
-                      <FormatDate dateStr={item.dob} />
+                      <FormatDate dateStr={item.dob} format="date" />
                       {` | ${item.age}`}
                     </>
                     )}

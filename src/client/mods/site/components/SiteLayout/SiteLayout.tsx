@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import Navbar from './Navbar';
 
 type SiteLayoutProps = {
@@ -20,9 +19,5 @@ function SiteLayout({ children }: SiteLayoutProps) {
     </Wrapper>
   );
 }
-
-SiteLayout.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 export default SiteLayout;

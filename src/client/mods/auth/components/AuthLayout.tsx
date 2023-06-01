@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -69,9 +68,5 @@ function AuthLayout({ children }: AuthLayoutProps) {
     </Wrapper>
   );
 }
-
-AuthLayout.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 export default AuthLayout;

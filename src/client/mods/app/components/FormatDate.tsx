@@ -1,6 +1,5 @@
 import React from 'react';
 import dayJs from 'dayjs';
-import PropTypes from 'prop-types';
 
 interface FormatDateProps {
   dateStr?: string;
@@ -19,14 +18,8 @@ function FormatDate({ format, dateStr }: FormatDateProps) {
   return <>{formattedDate}</>;
 }
 
-FormatDate.propTypes = {
-  dateStr: PropTypes.string,
-  format: PropTypes.string,
-};
-
 FormatDate.defaultProps = {
   dateStr: '',
-  format: 'date',
 };
 
 export default FormatDate;

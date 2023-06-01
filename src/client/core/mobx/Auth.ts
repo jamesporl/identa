@@ -3,7 +3,7 @@ import { observable, action, makeObservable } from 'mobx';
 import { RouterOutput } from '../../../utils/trpc';
 import { AUTH_TOKEN_KEY } from '../utils/storageKeys';
 
-type MyAccountOutput = RouterOutput['base']['myAccount'];
+export type MyAccountOutput = RouterOutput['base']['myAccount'];
 
 export class Auth {
   constructor() {

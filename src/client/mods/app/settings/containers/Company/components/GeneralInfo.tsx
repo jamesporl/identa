@@ -1,13 +1,14 @@
-import React, { ChangeEvent, useContext } from 'react';
-import PropTypes from 'prop-types';
+import React, { ChangeEvent, useContext, useState } from 'react';
 import {
-  Avatar, Row, Col, Button, Typography, message,
+  Row, Col, Button, Typography, message,
 } from 'antd';
 import { BankOutlined, EditOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import ModalContext from 'client/core/mobx/Modal';
-import { RouterOutput } from 'utils/trpc';
-import sendUploadRequest from 'client/core/utils/sendUploadRequest';
+import trpc, { RouterOutput } from 'utils/trpc';
+import sendUploadRequest, { dataUrltoFile } from 'client/core/utils/sendUploadRequest';
+import ProfileAvatar from 'client/mods/components/ProfileAvatar';
+import AuthContext from 'client/core/mobx/Auth';
 
 type Company = RouterOutput['practiceAdmin']['company'] | undefined;
 
@@ -27,16 +28,19 @@ const Wrapper = styled.div`
   }
 `;
 
-async function dataUrltoFile(dataUrl: string, filename: string, type: string) {
-  const res = await fetch(dataUrl);
-  const blob = await res.blob();
-  return new File([blob], filename, { type });
-}
+function GeneralInfo({ company, refetchCompany }: {
+  company: Company,
+  refetchCompany: () => void }) {
+  const [isLoadingLogo, setIsLoadingLogo] = useState(false);
 
-function GeneralInfo({ company }: { company: Company }) {
+  const trpcCtx = trpc.useContext();
+
   const modalCtx = useContext(ModalContext);
 
+  const authCtx = useContext(AuthContext);
+
   const handleSubmitCroppedImage = async (src: string, filename: string, type: string) => {
+    setIsLoadingLogo(true);
     const file = await dataUrltoFile(src, filename, type);
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
@@ -45,6 +49,10 @@ function GeneralInfo({ company }: { company: Company }) {
     const form = new FormData();
     form.append('file', file);
     await sendUploadRequest('/updateCompanyLogo', form);
+    refetchCompany();
+    const myAccount = await trpcCtx.base.myAccount.fetch();
+    setTimeout(() => setIsLoadingLogo(false), 3000);
+    authCtx.setMyAccount(myAccount);
   };
 
   const handleChangeImage = async (ev: ChangeEvent<HTMLInputElement>) => {
@@ -112,7 +120,13 @@ function GeneralInfo({ company }: { company: Company }) {
               </Col>
               <Col span={18} className="value">
                 <div>
-                  <Avatar shape="square" src={company?.image} icon={<BankOutlined />} size={120} />
+                  <ProfileAvatar
+                    shape="square"
+                    src={company?.image}
+                    defaultIcon={<BankOutlined />}
+                    size={120}
+                    isLoading={isLoadingLogo}
+                  />
                 </div>
                 <div>
                   <label htmlFor="image" className="upload">
@@ -133,9 +147,5 @@ function GeneralInfo({ company }: { company: Company }) {
     </Wrapper>
   );
 }
-
-GeneralInfo.propTypes = {
-  company: PropTypes.object, // eslint-disable-line react/require-default-props
-};
 
 export default GeneralInfo;

@@ -71,7 +71,9 @@ function PatientView() {
         <div className="desc">
           <Descriptions column={2}>
             <Descriptions.Item label="Birth sex">M</Descriptions.Item>
-            <Descriptions.Item label="Date of birth"><FormatDate dateStr="1988-06-20" /></Descriptions.Item>
+            <Descriptions.Item label="Date of birth">
+              <FormatDate dateStr="1988-06-20" format="date" />
+            </Descriptions.Item>
             <Descriptions.Item label="Phone">09154324212</Descriptions.Item>
             <Descriptions.Item label="Age">34</Descriptions.Item>
             <Descriptions.Item label="E-mail address">gonzales@gmail.com</Descriptions.Item>

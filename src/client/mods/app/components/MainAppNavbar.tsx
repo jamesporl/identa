@@ -78,7 +78,14 @@ function MainAppNavbar() {
     }
   };
 
+  const myProfileLink = <Link href="/app/settings/my-profile">My Profile</Link>;
+
   const profileDropdownItems = [
+    {
+      key: 'my-profile',
+      label: myProfileLink,
+      icon: <UserOutlined />,
+    },
     {
       key: 'logout',
       label: 'Log out',
@@ -86,12 +93,17 @@ function MainAppNavbar() {
     },
   ];
 
+  let brandImg = <Image src="/logo-icon.png" height={30} width={30} alt="logo" />;
+  if (authCtx.myAccount?.companyImage) {
+    brandImg = <Avatar src={authCtx.myAccount.companyImage} shape="square" size={40} />;
+  }
+
   return (
     <Wrapper>
       <div className="mainappnavbar-left">
         <div>
           <Link href="/app/patients" passHref>
-            <Image src="/logo-icon.png" height={30} width={30} alt="logo" />
+            {brandImg}
           </Link>
         </div>
         <div className="company-select-container">
@@ -125,7 +137,7 @@ function MainAppNavbar() {
               placement="bottomRight"
               overlayStyle={{ width: '140px' }}
             >
-              <Avatar size="small" icon={<UserOutlined />} />
+              <Avatar size={40} icon={<UserOutlined />} src={authCtx.myAccount?.image} />
             </Dropdown>
           </div>
         </Space>

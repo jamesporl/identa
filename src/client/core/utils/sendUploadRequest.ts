@@ -14,6 +14,12 @@ const config = {
   },
 };
 
+export async function dataUrltoFile(dataUrl: string, filename: string, type: string) {
+  const res = await fetch(dataUrl);
+  const blob = await res.blob();
+  return new File([blob], filename, { type });
+}
+
 export default async function sendUploadRequest(endpoint: string, data: any) {
   await axios.post(
     `${uploadsUrl}${endpoint}`,

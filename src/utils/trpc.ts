@@ -14,7 +14,7 @@ export default createTRPCNext<AppTrpcRouter>({
     return {
       links: [
         httpBatchLink({
-          url: `${trpcBaseUrl}/trpc`,
+          url: trpcBaseUrl,
           async headers() {
             let authToken = '';
             if (typeof window !== 'undefined') {
