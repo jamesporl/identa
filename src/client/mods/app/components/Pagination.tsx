@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 import { observer } from 'mobx-react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import SheetContext, { ActiveDocLink } from 'client/core/mobx/Sheet';
 import { useRouter } from 'next/router';
@@ -157,10 +156,6 @@ function Pagination({ onChangePage }: PaginationProps) {
     </Wrapper>
   );
 }
-
-Pagination.propTypes = {
-  onChangePage: PropTypes.func,
-};
 
 Pagination.defaultProps = {
   onChangePage: () => undefined,

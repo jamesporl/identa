@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import debounce from 'lodash/debounce';
 import { Select } from 'antd';
-import PropTypes from 'prop-types';
 import trpc from 'utils/trpc';
 import SelectValue from 'client/core/utils/_types/SelectValue';
 
 interface PatientSelectorProps {
   onChange?: (value?: SelectValue) => void;
-  value?: SelectValue;
+  value?: SelectValue; // eslint-disable-line react/require-default-props
 }
 
 function PatientSelector({ onChange, value }: PatientSelectorProps) {
@@ -44,15 +43,6 @@ function PatientSelector({ onChange, value }: PatientSelectorProps) {
     />
   );
 }
-
-PatientSelector.propTypes = {
-  onChange: PropTypes.func,
-  // eslint-disable-next-line react/require-default-props
-  value: PropTypes.shape({
-    label: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
-  }),
-};
 
 PatientSelector.defaultProps = {
   onChange: () => undefined,

@@ -1,6 +1,5 @@
 import React, { ReactNode, useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
-import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import styled from 'styled-components';
 import ModalContext from 'client/core/mobx/Modal';
@@ -95,9 +94,5 @@ function MainLayout({ children }: MainLayoutProps) {
     </>
   );
 }
-
-MainLayout.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 export default observer(MainLayout);

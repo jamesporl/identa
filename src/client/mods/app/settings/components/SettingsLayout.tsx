@@ -1,6 +1,5 @@
 import React, { ReactNode, useContext } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import UIContext from 'client/core/mobx/UI';
 import { Menu } from 'antd';
@@ -66,9 +65,5 @@ function SettingsLayout({ children }: SettingsLayoutProps) {
     </AppSingleHeaderLayout>
   );
 }
-
-SettingsLayout.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 export default observer(SettingsLayout);

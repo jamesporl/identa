@@ -1,6 +1,5 @@
 import React, { ReactNode, useContext, useEffect } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import { useRouter } from 'next/router';
 import MainLayout from 'client/mods/components/MainLayout';
@@ -44,9 +43,5 @@ function AppSingleHeaderLayout({ children }: AppSingleHeaderLayoutProps) {
     </MainLayout>
   );
 }
-
-AppSingleHeaderLayout.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 export default observer(AppSingleHeaderLayout);

@@ -18,9 +18,18 @@ const AddClinicFormComponent = dynamic(
   },
 );
 
+const UpdateMyAccountFormComponent = dynamic(
+  () => import('./UpdateMyAccountForm'),
+  {
+    ssr: false,
+    loading: () => <Spinner />,
+  },
+);
+
 const settingsModals = {
   addAccountForm: AddAccountFormComponent,
   addClinicForm: AddClinicFormComponent,
+  updateMyAccountForm: UpdateMyAccountFormComponent,
 };
 
 export default settingsModals;

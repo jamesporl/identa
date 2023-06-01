@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import PropTypes from 'prop-types';
 import SecondAppNavbar from './SecondAppNavbar';
 import '@fullcalendar/common/main.css';
 import AppSingleHeaderLayout from './AppSingleHeaderLayout';
@@ -16,9 +15,5 @@ function AppLayout({ children }: AppLayoutProps) {
     </AppSingleHeaderLayout>
   );
 }
-
-AppLayout.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 export default AppLayout;

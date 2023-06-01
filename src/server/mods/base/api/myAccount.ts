@@ -24,13 +24,13 @@ export const myAccountZObj = z.object({
     name: z.string(),
   })),
   companyPerms: z.optional(z.nativeEnum(CompanyPermKey).array()),
+  companyImage: z.optional(z.string()),
 });
 
 const myAccount = authenticatedProcedure
   .output(myAccountZObj)
   .query(async ({ ctx }) => {
     const { accountId, companyId, clinicId } = ctx;
-    console.log('my account', companyId, clinicId);
     const account = await MAccount.findOne({ _id: accountId }).lean();
 
     let name = '';
@@ -38,6 +38,7 @@ const myAccount = authenticatedProcedure
     let title = '';
     let phone = '';
     let isPractitioner = false;
+    let companyImage = '';
     let company: { _id: string, name: string } | undefined;
     let clinic: { _id: string, name: string } | undefined;
     const companyPerms: CompanyPermKey[] = [];
@@ -48,6 +49,7 @@ const myAccount = authenticatedProcedure
         const companyDoc = await MCompany.findOne({ _id: companyId });
         if (companyDoc) {
           company = { _id: companyId.toHexString(), name: companyDoc.name };
+          companyImage = companyDoc.image || '';
         }
 
         const companyLink = await MAccountCompanyLink.findOne({ companyId, accountId });
@@ -85,6 +87,7 @@ const myAccount = authenticatedProcedure
       companyPerms,
       company,
       clinic,
+      companyImage,
     };
   });
 

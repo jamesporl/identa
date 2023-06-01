@@ -144,7 +144,7 @@ function Company() {
             <PageTitle />
           </div>
         </div>
-        <GeneralInfo company={company?.data} />
+        <GeneralInfo company={company.data} refetchCompany={company.refetch} />
         <div className="details-container">
           <div className="content">
             <div className="group">
@@ -152,7 +152,7 @@ function Company() {
                 Clinics
               </div>
               <div style={{ marginTop: '1rem' }}>
-                <Typography.Text type="secondary" style={{ fontSize: '0.75rem', marginTop: '2rem' }}>
+                <Typography.Text type="secondary" style={{ marginTop: '2rem' }}>
                   If you operate in multiple locations, simply add a clinic to represent each
                   location.
                 </Typography.Text>

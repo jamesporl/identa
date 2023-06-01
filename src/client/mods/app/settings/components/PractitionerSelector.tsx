@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import debounce from 'lodash/debounce';
 import { Select } from 'antd';
-import PropTypes from 'prop-types';
 import trpc from 'utils/trpc';
 import { AccountsFilter } from 'server/mods/practice/admin/api/_types';
 import SelectValue from 'client/core/utils/_types/SelectValue';
 
 interface PractitionerSelectorProps {
   onChange?: (value?: SelectValue) => void;
-  value?: SelectValue;
+  value?: SelectValue; // eslint-disable-line react/require-default-props
 }
 
 function PractitionerSelector({ onChange, value }: PractitionerSelectorProps) {
@@ -50,15 +49,6 @@ function PractitionerSelector({ onChange, value }: PractitionerSelectorProps) {
     />
   );
 }
-
-PractitionerSelector.propTypes = {
-  onChange: PropTypes.func,
-  // eslint-disable-next-line react/require-default-props
-  value: PropTypes.shape({
-    label: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
-  }),
-};
 
 PractitionerSelector.defaultProps = {
   onChange: () => undefined,
